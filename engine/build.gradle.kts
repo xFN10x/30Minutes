@@ -1,15 +1,11 @@
 plugins {
-    application
+	java
 }
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
     }
-}
-
-application {
-    mainClass = "fn10.thirtyminutes.App"
 }
 
 val lwjglVersion = "3.4.1"
