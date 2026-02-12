@@ -47,4 +47,14 @@ dependencies {
 	implementation("com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}")
 	implementation("org.joml:joml:$jomlVersion")
 	implementation("com.code-disaster.steamworks4j:steamworks4j-server:${steamworks4jserverVersion}")
+
+	// Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
+	implementation("com.google.code.gson:gson:2.13.2")
+	// Source: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
+	implementation("org.apache.logging.log4j:log4j-core:2.25.3")
+	annotationProcessor("org.apache.logging.log4j:log4j-core:2.25.3")
+}
+
+tasks.test {
+	failOnNoDiscoveredTests = false;
 }

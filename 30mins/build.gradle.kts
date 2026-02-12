@@ -15,3 +15,7 @@ repositories {
 dependencies {
 	implementation(project(":engine"))
 }
+
+tasks.test {
+	failOnNoDiscoveredTests = false;
+}
