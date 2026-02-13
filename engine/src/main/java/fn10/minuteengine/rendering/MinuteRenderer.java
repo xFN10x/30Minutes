@@ -31,6 +31,7 @@ public final class MinuteRenderer {
      */
     public volatile boolean inVBlank = false;
     public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue();
+    public volatile FloatBuffer vertexBuffer = memAllocFloat(1000);
 
     public long createWindow() {
         GLFWErrorCallback.createPrint(System.err).set();
@@ -93,19 +94,12 @@ public final class MinuteRenderer {
 
         GL11.glClearColor(0, 0, 0, 0);
 
-        FloatBuffer vertexBuffer = memAllocFloat(1000);
-
         while (!glfwWindowShouldClose(currentWindow)) {
             GL11.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnableClientState(GL_VERTEX_ARRAY);
-            List<Renderable> renderList = Collections.unmodifiableList(renderQueue.queue);
-            for (Renderable renderable : renderList) {
-                for (Tri3 tri : renderable.getTriangleList()) {
-                    glColor3f(tri.colour.r, tri.colour.g, tri.colour.b);
-                    vertexBuffer.put(tri.verticies).flip();
-                    glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
-                    glDrawArrays(GL_TRIANGLES, 0, 3);
-                }
+            List<RenderFunction> renderList = Collections.unmodifiableList(renderQueue.queue);
+            for (RenderFunction renderable : renderList) {
+                renderable.onRender(this);
             }
             glDisableClientState(GL_VERTEX_ARRAY);
             // push graphics to the window

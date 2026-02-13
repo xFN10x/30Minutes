@@ -24,11 +24,11 @@ import fn10.minuteengine.util.MinuteJarUtils;
 
 public final class MinuteEngine {
 
-    public static int ERR_NO_GAME_TO_LAUNCH = 0;
     public static int ERR_GAME_FAIL_LOAD_GENERIC = 10;
     public static int ERR_GAME_FAIL_LOAD_URL_ERROR = 11;
     public static int ERR_GAME_FAIL_LOAD_FAIL_READ = 12;
     public static int ERR_GENERIC = 90;
+    public static int ERR_NO_GAME_TO_LAUNCH = 91;
     public static int NO_ERR = -1;
     public static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 

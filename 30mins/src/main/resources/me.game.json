@@ -1,3 +1,4 @@
 {
-    "name": "30 Minutes"
+    "name": "30 Minutes",
+    "mainClass": "fn10.thirtyminutes.ThirtyMinutes"
 }

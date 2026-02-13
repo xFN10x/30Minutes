@@ -7,6 +7,7 @@ import fn10.minuteengine.rendering.Tri3;
 import fn10.minuteengine.rendering.Vec2;
 
 public abstract class PositionedRenderable extends Renderable {
+    public Vec2 pos;
     @Override
     public Tri3[] getTriangleList() {
         ArrayList<Tri3> tris = new ArrayList<>();
@@ -21,10 +22,16 @@ public abstract class PositionedRenderable extends Renderable {
         return tris.toArray(new Tri3[0]);
     }
 
-    public abstract Vec2 getPos();
+    public Vec2 getPos() {
+        return pos;
+    }
 
-    public abstract void setPos(Vec2 pos);
+    public void setPos(Vec2 pos) {
+        this.pos = pos;
+    }
 
-    public abstract Tri3[] getLocalTriangles();
+    public Tri3[] getLocalTriangles() {
+        return null;
+    }
 
 }

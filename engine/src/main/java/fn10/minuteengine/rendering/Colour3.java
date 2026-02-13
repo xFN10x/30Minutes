@@ -34,4 +34,16 @@ public final class Colour3 {
         this.g = g / 255f;
         this.b = b / 255f;
     }
+
+    public float getRed() {
+        return r;
+    }
+
+    public float getGreen() {
+        return g;
+    }
+
+    public float getBlue() {
+        return b;
+    }
 }

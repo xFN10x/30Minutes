@@ -8,9 +8,9 @@ public class MinuteRenderQueue {
     /**
      * A list of renderables that gets cleared every frame.
      */
-    protected ArrayList<Renderable> queue = new ArrayList<>(0);
+    protected ArrayList<RenderFunction> queue = new ArrayList<>(0);
 
-    public void render(Renderable renderable) {
+    public void render(RenderFunction renderable) {
         queue.add(renderable);
     }
 }
