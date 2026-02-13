@@ -53,6 +53,8 @@ dependencies {
 	// Source: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
 	implementation("org.apache.logging.log4j:log4j-core:2.25.3")
 	annotationProcessor("org.apache.logging.log4j:log4j-core:2.25.3")
+	// Source: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation("org.apache.commons:commons-lang3:3.20.0")
 }
 
 tasks.test {
