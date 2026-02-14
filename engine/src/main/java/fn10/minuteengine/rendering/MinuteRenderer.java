@@ -7,7 +7,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
-import fn10.minuteengine.rendering.renderables.Renderable;
 import fn10.minuteengine.state.State;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -107,6 +106,15 @@ public final class MinuteRenderer {
 
             glfwPollEvents();
             state.executeOnRenderThread(renderQueue);
+        }
+    }
+
+    public void renderTriangles(Tri3... tris) {
+        for (Tri3 tri : tris) {
+            glColor3f(tri.colour.getRed(), tri.colour.getGreen(), tri.colour.getBlue());
+            vertexBuffer.put(tri.verticies).flip();
+            glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
         }
     }
 }
