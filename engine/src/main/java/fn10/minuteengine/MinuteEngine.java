@@ -47,7 +47,7 @@ public final class MinuteEngine {
         renderer.renderLoop(currentState);
     }, "ME-Render");
 
-    protected boolean running = false;
+    private boolean running = false;
 
     public void start() {
         renderer = MinuteRenderer.initRenderer();
@@ -70,7 +70,7 @@ public final class MinuteEngine {
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
         }
 
-        logger.info("Loading game from: " + gameInfoJsonUrl.toString());
+        logger.info("Loading game from: {}", gameInfoJsonUrl.toString());
 
         MinuteGameInfo gameInfo;
         try {
@@ -89,7 +89,7 @@ public final class MinuteEngine {
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
         }
 
-        logger.info("Loaded game: " + info.name());
+        logger.info("Loaded game: {}", info.name());
         return -1;
     }
 
@@ -101,7 +101,7 @@ public final class MinuteEngine {
     }
 
     public static void exitWithCode(int code) {
-        logger.info("VM exitting with code: " + code);
+        logger.info("VM exiting with code: {}", code);
         System.exit(code);
     }
 

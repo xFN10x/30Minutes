@@ -12,7 +12,7 @@ public class TestState extends State {
     @Override
     public void executeOnRenderThread(MinuteRenderQueue queue) {
         queue.render(new Triangle(trianglePos.add(0.01f, 0)));
-        System.out.println(trianglePos.toString());
+        //System.out.println(trianglePos.toString());
     }
 
     @Override
