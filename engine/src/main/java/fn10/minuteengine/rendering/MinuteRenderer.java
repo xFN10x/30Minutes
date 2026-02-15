@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
 import fn10.minuteengine.state.State;
+import fn10.minuteengine.util.MinuteVectorUtils;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -43,7 +44,7 @@ public final class MinuteRenderer {
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
 
-        currentWindow = GLFW.glfwCreateWindow(640, 480, "MinuteEngine", NULL, NULL);
+        currentWindow = GLFW.glfwCreateWindow(1280, 720, "MinuteEngine", NULL, NULL);
         if (currentWindow == NULL) {
             throw new IllegalStateException("Unable to create GLFW Window");
         }
@@ -58,7 +59,8 @@ public final class MinuteRenderer {
             GLFW.glfwGetWindowSize(currentWindow, pWidth, pHeight);
 
             GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
-
+            if (vidmode == null)
+                throw new IllegalStateException("Unable to create GLFW Window");
             GLFW.glfwSetWindowPos(currentWindow, (vidmode.width() - pWidth.get(0)) / 2,
                     (vidmode.height() - pHeight.get(0)) / 2);
 
@@ -96,8 +98,8 @@ public final class MinuteRenderer {
         while (!glfwWindowShouldClose(currentWindow)) {
             GL11.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnableClientState(GL_VERTEX_ARRAY);
-            List<RenderFunction> renderList = Collections.unmodifiableList(renderQueue.queue);
-            for (RenderFunction renderable : renderList) {
+            List<Renderable> renderList = Collections.unmodifiableList(renderQueue.queue);
+            for (Renderable renderable : renderList) {
                 renderable.onRender(this);
             }
             glDisableClientState(GL_VERTEX_ARRAY);
@@ -112,7 +114,7 @@ public final class MinuteRenderer {
     public void renderTriangles(Tri3... tris) {
         for (Tri3 tri : tris) {
             glColor3f(tri.colour.getRed(), tri.colour.getGreen(), tri.colour.getBlue());
-            vertexBuffer.put(tri.verticies).flip();
+            vertexBuffer.put(MinuteVectorUtils.vector2ArrayToVertexArray(tri.verticies, 0)).flip();
             glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
             glDrawArrays(GL_TRIANGLES, 0, 3);
         }
