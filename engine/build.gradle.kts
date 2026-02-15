@@ -1,22 +1,8 @@
-plugins {
-	java
-}
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(25)
-    }
-}
-
 val lwjglVersion = "3.4.1"
 val steamworks4jVersion = "1.10.0"
 val jomlVersion = "1.10.8"
 val steamworks4jserverVersion = "1.10.0"
 val lwjglNatives = "natives-windows"
-
-repositories {
-	mavenCentral()
-}
 
 dependencies {
 	implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
@@ -57,6 +43,3 @@ dependencies {
 	implementation("org.apache.commons:commons-lang3:3.20.0")
 }
 
-tasks.test {
-	failOnNoDiscoveredTests = false;
-}
