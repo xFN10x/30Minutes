@@ -1,5 +1,9 @@
 package fn10.minuteengine.rendering;
 
+import fn10.minuteengine.game.MinuteGame;
+import fn10.minuteengine.state.MinuteStateManager;
+import fn10.minuteengine.util.MinuteAssetUtils;
+import org.apache.logging.log4j.Level;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -11,6 +15,7 @@ import org.lwjgl.system.MemoryStack;
 import fn10.minuteengine.state.State;
 import fn10.minuteengine.util.MinuteVectorUtils;
 
+import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -18,6 +23,8 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Collections;
@@ -29,8 +36,8 @@ public final class MinuteRenderer {
 
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
-    public Font defaultFont =
-            Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(getClass().getResourceAsStream("/assets/font/opensans.ttf")));
+    public final Font defaultFont;
+
 
     /**
      * A bool specifing if it's time to render things to screen currently.
@@ -38,6 +45,19 @@ public final class MinuteRenderer {
     public volatile boolean inVBlank = false;
     public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue();
     public volatile FloatBuffer vertexBuffer = memAllocFloat(1000);
+
+    public MinuteRenderer() {
+        Font defaultFont1;
+        try {
+            InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
+            if (streamAsset == null) throw new NullPointerException("Font Asset Not Found");
+            defaultFont1 = Font.createFont(Font.TRUETYPE_FONT, streamAsset);
+        } catch (Exception e) {
+            logger.log(Level.ERROR, "Failed to load font; using fallback.");
+            defaultFont1 = Font.getFont(Font.SANS_SERIF);
+        }
+        defaultFont = defaultFont1;
+    }
 
     public long createWindow() {
         GLFWErrorCallback.createPrint(System.err).set();
@@ -96,7 +116,7 @@ public final class MinuteRenderer {
      * Calling this function starts the rendering loop. Only call after window
      * creation.
      */
-    public void renderLoop(State state) {
+    public void renderLoop(MinuteStateManager state) {
         GL.createCapabilities();
 
         GL11.glClearColor(0, 0, 0, 0);
@@ -113,7 +133,7 @@ public final class MinuteRenderer {
             glfwSwapBuffers(currentWindow);
 
             glfwPollEvents();
-            state.onRenderThread(renderQueue);
+            state.currentState.onRenderThread(renderQueue);
         }
     }
 

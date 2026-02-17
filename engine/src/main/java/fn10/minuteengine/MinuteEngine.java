@@ -35,8 +35,7 @@ public final class MinuteEngine {
 
     private URLClassLoader loader;
     public volatile MinuteGameInfo info;
-    private volatile State currentState;
-    public volatile MinuteStateManager stateManager;
+    public volatile MinuteStateManager stateManager = new MinuteStateManager(this);
 
     public MinuteRenderer renderer;
     static {
@@ -46,7 +45,7 @@ public final class MinuteEngine {
 
     public Thread renderThread = new Thread(() -> {
         renderer.createWindow();
-        renderer.renderLoop(currentState);
+        renderer.renderLoop(stateManager);
     }, "ME-Render");
 
     private boolean running = false;
@@ -54,8 +53,8 @@ public final class MinuteEngine {
     public void start() {
         renderer = MinuteRenderer.initRenderer();
         running = true;
+        stateManager.changeState(stateManager.registerState(TestState.class));
         mainLoop();
-
     }
 
     public int loadGameJar(Path jarPath, String op) {

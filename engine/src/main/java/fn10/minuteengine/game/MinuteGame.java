@@ -10,13 +10,13 @@ import static fn10.minuteengine.MinuteEngine.logger;
 
 public abstract class MinuteGame {
 
-    public static MinuteGame getFromInfoAndClassLoader(ClassLoader loader, MinuteGameInfo info, ) {
+    public static MinuteGame getFromInfoAndClassLoader(ClassLoader loader, MinuteGameInfo info, MinuteStateManager stateManager) {
         logger.info("Creating new instance of game {}, with game class being {}", info.name(), info.mainClass());
         try {
             Class<?> loadedClass = loader.loadClass(info.mainClass());
             MinuteGame newGame = (MinuteGame) loadedClass.getConstructor().newInstance();
-            newGame.onLoad();
-
+            newGame.onLoad(stateManager);
+            return newGame;
         } catch (ClassNotFoundException e) {
             String message = "Failed to load game class: " + info.mainClass() + " of game " + info.name();
             logger.log(Level.ERROR, message, e);
