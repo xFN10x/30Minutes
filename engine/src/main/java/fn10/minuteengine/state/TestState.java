@@ -10,14 +10,24 @@ public class TestState extends State {
     public Vector2f trianglePos = new Vector2f(-1, 0);
 
     @Override
-    public void executeOnRenderThread(MinuteRenderQueue queue) {
+    public void onRenderThread(MinuteRenderQueue queue) {
         queue.render(new Triangle(trianglePos.add(0.01f, 0)));
         //System.out.println(trianglePos.toString());
     }
 
     @Override
-    public void executeOnGameUpdate() {
+    public void onGameUpdate() {
         System.out.println("game update");
+    }
+
+    @Override
+    public void onStart() {
+
+    }
+
+    @Override
+    public void onLoad() {
+
     }
 
 }

@@ -1,11 +1,10 @@
-package fn10.thirtyminutes;
+package fn10.minuteengine.game;
 
-import fn10.minuteengine.game.MinuteGame;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.state.State;
+import fn10.minuteengine.state.TestState;
 
-public class ThirtyMinutes extends MinuteGame {
-
+public class TestGame extends MinuteGame {
     @Override
     public Long getInitalState(MinuteStateManager stateManager) {
         return null;
@@ -13,7 +12,7 @@ public class ThirtyMinutes extends MinuteGame {
 
     @Override
     public void onLoad(MinuteStateManager stateManager) {
-
+        stateManager.registerState(TestState.class);
     }
 
     @Override

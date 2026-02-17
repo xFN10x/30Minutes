@@ -6,6 +6,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 
+import fn10.minuteengine.state.MinuteStateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginUtil;
@@ -34,7 +35,8 @@ public final class MinuteEngine {
 
     private URLClassLoader loader;
     public volatile MinuteGameInfo info;
-    public volatile State currentState;
+    private volatile State currentState;
+    public volatile MinuteStateManager stateManager;
 
     public MinuteRenderer renderer;
     static {
@@ -53,7 +55,7 @@ public final class MinuteEngine {
         renderer = MinuteRenderer.initRenderer();
         running = true;
         mainLoop();
-        currentState = new TestState();
+
     }
 
     public int loadGameJar(Path jarPath, String op) {
@@ -105,8 +107,8 @@ public final class MinuteEngine {
         System.exit(code);
     }
 
-    public static void main(String[] args) {
-        logger.info("Starting Java VM with args: " + String.join(", ", args));
+    static void main(String[] args) {
+        logger.info("Starting Java VM with args: {}", String.join(", ", args));
         if (args.length <= 0)
             exitWithCode(ERR_NO_GAME_TO_LAUNCH);
         String jarOp = "jar";

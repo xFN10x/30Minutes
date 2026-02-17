@@ -1,5 +1,6 @@
 package fn10.minuteengine.rendering;
 
+import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -16,18 +17,23 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public final class MinuteRenderer {
     private long currentWindow;
 
-    public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
+    //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
+    public Vector2i gameSize = new Vector2i(1280, 720);
+    public Font defaultFont =
+            Font.createFont(Font.TRUETYPE_FONT, Objects.requireNonNull(getClass().getResourceAsStream("/assets/font/opensans.ttf")));
+
     /**
-     * A bool specifing if its time to render things to screen currently.
+     * A bool specifing if it's time to render things to screen currently.
      */
     public volatile boolean inVBlank = false;
     public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue();
@@ -42,9 +48,9 @@ public final class MinuteRenderer {
 
         GLFW.glfwDefaultWindowHints();
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE);
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE);
+        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW_TRUE);
 
-        currentWindow = GLFW.glfwCreateWindow(1280, 720, "MinuteEngine", NULL, NULL);
+        currentWindow = GLFW.glfwCreateWindow(gameSize.x(), gameSize.y(), "MinuteEngine", NULL, NULL);
         if (currentWindow == NULL) {
             throw new IllegalStateException("Unable to create GLFW Window");
         }
@@ -107,7 +113,7 @@ public final class MinuteRenderer {
             glfwSwapBuffers(currentWindow);
 
             glfwPollEvents();
-            state.executeOnRenderThread(renderQueue);
+            state.onRenderThread(renderQueue);
         }
     }
 
