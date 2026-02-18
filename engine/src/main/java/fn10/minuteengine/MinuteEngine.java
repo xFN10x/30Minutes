@@ -1,12 +1,14 @@
 package fn10.minuteengine;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 
 import fn10.minuteengine.state.MinuteStateManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginUtil;
@@ -38,9 +40,11 @@ public final class MinuteEngine {
     public volatile MinuteStateManager stateManager = new MinuteStateManager(this);
 
     public MinuteRenderer renderer;
+
     static {
         PluginUtil.instantiatePlugin(MinuteEngineLayout.class);
     }
+
     public static Logger logger = LogManager.getLogger("MinuteEngine");
 
     public Thread renderThread = new Thread(() -> {
@@ -64,27 +68,28 @@ public final class MinuteEngine {
                 gameInfoJsonUrl = MinuteJarUtils.getFileFromJar(jarPath, "me.game.json");
             else if (op.equals("binFolder"))
                 gameInfoJsonUrl = jarPath.resolve("me.game.json").toUri().toURL();
-            else 
+            else
                 return ERR_GAME_FAIL_LOAD_URL_ERROR;
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            logger.log(Level.ERROR, "Failed to get jar URL with op: " + op + ", and path " + jarPath + ".", e);
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
         }
 
         logger.info("Loading game from: {}", gameInfoJsonUrl.toString());
 
         MinuteGameInfo gameInfo;
-        try {
-            gameInfo = gson.fromJson(new String(gameInfoJsonUrl.openStream().readAllBytes()), MinuteGameInfo.class);
+        try (InputStream jsonStream = gameInfoJsonUrl.openStream()) {
+            gameInfo = gson.fromJson(new String(jsonStream.readAllBytes()), MinuteGameInfo.class);
         } catch (JsonSyntaxException | IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
+            logger.log(Level.ERROR, "Failed to load game " + gameInfoJsonUrl + "'s json file.", e);
             return ERR_GAME_FAIL_LOAD_FAIL_READ;
         }
 
         info = gameInfo;
 
         try {
-            loader = new URLClassLoader(new URL[] { jarPath.toUri().toURL() });
+            loader = new URLClassLoader(new URL[]{jarPath.toUri().toURL()});
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
