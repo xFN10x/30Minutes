@@ -1,11 +1,10 @@
 package fn10.minuteengine.state;
 
 import fn10.minuteengine.MinuteEngine;
-import fn10.minuteengine.exception.StateLoadFailedException;
-import fn10.minuteengine.exception.StateNotRegisteredException;
+import fn10.minuteengine.exception.state.StateLoadFailedException;
+import fn10.minuteengine.exception.state.StateNotRegisteredException;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.HashMap;
 
 public final class MinuteStateManager {

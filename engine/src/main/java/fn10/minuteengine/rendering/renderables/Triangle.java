@@ -1,16 +1,12 @@
 package fn10.minuteengine.rendering.renderables;
 
+import fn10.minuteengine.rendering.renderables.base.PositionedRenderable;
 import org.joml.Vector2f;
 
 import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.Tri3;
 
-public class Triangle extends PositionedTriBasedRenderable {
-    @Override
-    public Vector2f getPos() {
-        return pos;
-    }
-
+public class Triangle extends PositionedRenderable {
     public Triangle(Vector2f pos) {
         this.pos = pos;
     }
@@ -22,10 +18,4 @@ public class Triangle extends PositionedTriBasedRenderable {
             new Vector2f(-0.5f, -0.5f),
             new Vector2f(0.5f, -0.5f)}) };
     }
-
-    @Override
-    public void setPos(Vector2f pos) {
-        this.pos = pos;
-    }
-
 }

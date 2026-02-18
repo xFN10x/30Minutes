@@ -1,6 +1,7 @@
 package fn10.minuteengine.state;
 
 import fn10.minuteengine.rendering.MinuteRenderQueue;
+import fn10.minuteengine.rendering.MinuteRenderer;
 
 public abstract class State {
 

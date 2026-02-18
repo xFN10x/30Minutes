@@ -1,6 +1,6 @@
 package fn10.minuteengine.rendering;
 
-import fn10.minuteengine.game.MinuteGame;
+import fn10.minuteengine.rendering.renderables.base.Renderable;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
 import org.apache.logging.log4j.Level;
@@ -12,7 +12,6 @@ import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryStack;
 
-import fn10.minuteengine.state.State;
 import fn10.minuteengine.util.MinuteVectorUtils;
 
 import static fn10.minuteengine.MinuteEngine.logger;
@@ -23,13 +22,15 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
 import java.awt.*;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.temporal.TemporalAmount;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public final class MinuteRenderer {
     private long currentWindow;
@@ -37,14 +38,15 @@ public final class MinuteRenderer {
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
     public final Font defaultFont;
+    private  final FrameRateCounter frc = new FrameRateCounter();
 
 
     /**
      * A bool specifing if it's time to render things to screen currently.
      */
     public volatile boolean inVBlank = false;
-    public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue();
-    public volatile FloatBuffer vertexBuffer = memAllocFloat(1000);
+    public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue(this);
+    public volatile FloatBuffer vertexBuffer = memAllocFloat(4000000);
 
     public MinuteRenderer() {
         Font defaultFont1;
@@ -91,7 +93,7 @@ public final class MinuteRenderer {
                     (vidmode.height() - pHeight.get(0)) / 2);
 
             GLFW.glfwMakeContextCurrent(currentWindow);
-            GLFW.glfwSwapInterval(1);
+            //GLFW.glfwSwapInterval(1);
             GLFW.glfwShowWindow(currentWindow);
         }
 
@@ -122,27 +124,36 @@ public final class MinuteRenderer {
         GL11.glClearColor(0, 0, 0, 0);
 
         while (!glfwWindowShouldClose(currentWindow)) {
+            Instant begin = Instant.now();
             GL11.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnableClientState(GL_VERTEX_ARRAY);
-            List<Renderable> renderList = Collections.unmodifiableList(renderQueue.queue);
-            for (Renderable renderable : renderList) {
-                renderable.onRender(this);
-            }
+
+            vertexBuffer.flip();
+            glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
+            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit()/3);
+
             glDisableClientState(GL_VERTEX_ARRAY);
             // push graphics to the window
             glfwSwapBuffers(currentWindow);
 
+            vertexBuffer.clear();
             glfwPollEvents();
             state.currentState.onRenderThread(renderQueue);
+            frc.frame();
+            Instant end = Instant.now();
+            Instant frameTime = end.minusNanos(begin.getNano());
+            logger.log(Level.INFO, "Frametime: {}", frameTime.getNano()/1000000000f);
+            logger.log(Level.INFO, "Framerate: {}", frc.getFrameRate());
         }
     }
 
-    public void renderTriangles(Tri3... tris) {
-        for (Tri3 tri : tris) {
-            glColor3f(tri.colour.getRed(), tri.colour.getGreen(), tri.colour.getBlue());
-            vertexBuffer.put(MinuteVectorUtils.vector2ArrayToVertexArray(tri.verticies, 0)).flip();
-            glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
+    public final class Renderer2D {
+          private BufferedImage buffer = null;
+
+          public BufferedImage createBuffer(int width, int height) {
+              buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+              buffer.createGraphics();
+              return buffer;
+          }
     }
 }

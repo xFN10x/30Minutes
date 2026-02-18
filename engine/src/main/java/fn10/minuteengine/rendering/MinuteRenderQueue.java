@@ -1,16 +1,17 @@
 package fn10.minuteengine.rendering;
 
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import fn10.minuteengine.rendering.renderables.TriBasedRenderable;
+import fn10.minuteengine.rendering.renderables.base.Renderable;
+import fn10.minuteengine.util.MinuteVectorUtils;
 
 public class MinuteRenderQueue {
-    /**
-     * A list of renderables that gets cleared every frame.
-     */
-    protected ArrayList<Renderable> queue = new ArrayList<>(0);
-
+    private final MinuteRenderer renderer;
+    public MinuteRenderQueue(MinuteRenderer renderer) {
+        this.renderer = renderer;
+    }
     public void render(Renderable renderable) {
-        queue.add(renderable);
+        renderer.vertexBuffer.put(MinuteVectorUtils.vector3ArrayToVertexAray(renderable.getTriangleVerticies()));
     }
 }
