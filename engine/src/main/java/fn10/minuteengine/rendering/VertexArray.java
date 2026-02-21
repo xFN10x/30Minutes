@@ -11,8 +11,8 @@ import org.joml.Vector2fc;
 /**
  * A triangle using 3 floats for each vertex.
  */
-public record Tri3(Colour3 colour, ArrayList<Vector2f> verticies) {
-    public Tri3(Colour3 colour, Vector2f[] verticies) {
+public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies) {
+    public VertexArray(Colour3 colour, Vector2f[] verticies) {
         this(colour, new ArrayList<Vector2f>(List.of(verticies)));
     }
 
@@ -31,9 +31,9 @@ public record Tri3(Colour3 colour, ArrayList<Vector2f> verticies) {
      * @param tris The triangles to parse through
      * @return a fliped FloatBuffer of the vertices.
      */
-    public static FloatBuffer createVertexBuffer(Tri3... tris) {
+    public static FloatBuffer createVertexBuffer(VertexArray... tris) {
         FloatBuffer buf = FloatBuffer.allocate(tris.length * 9);
-        for (Tri3 tri3 : tris) {
+        for (VertexArray tri3 : tris) {
             buf.put(MinuteVectorUtils.vector2ArrayToVertexArray(tri3.verticies, 0));
         }
         return buf.flip();

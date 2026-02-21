@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static fn10.minuteengine.MinuteEngine.logger;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL33.*;
 
 public abstract class Shader implements AutoCloseable {
     protected final String vertexShaderData;

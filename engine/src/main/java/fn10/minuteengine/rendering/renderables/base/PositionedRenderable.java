@@ -1,6 +1,6 @@
 package fn10.minuteengine.rendering.renderables.base;
 
-import fn10.minuteengine.rendering.Tri3;
+import fn10.minuteengine.rendering.VertexArray;
 import fn10.minuteengine.util.MinuteVectorUtils;
 import org.joml.Vector2f;
 import org.joml.Vector3fc;
@@ -13,18 +13,18 @@ public abstract class PositionedRenderable extends ScaledRenderable {
 
     @Override
     public Vector3fc[] getTriangleVertices() {
-        Tri3[] triangleList = getTriangleList();
+        VertexArray[] triangleList = getTriangleList();
         //apparently specificing a length is faster
         ArrayList<Vector3fc> vec3s = new ArrayList<>(triangleList.length * 3);
-        for (Tri3 tri3 : triangleList) {
+        for (VertexArray tri3 : triangleList) {
             vec3s.addAll(List.of(MinuteVectorUtils.vector2ArrayToVector3Array(tri3.verticies(), 0)));
         }
         return vec3s.toArray(new Vector3fc[0]);
     }
 
-    public Tri3[] getTriangleList() {
-        Tri3[] localTriangles = getLocalTriangles();
-        for (Tri3 tri : localTriangles) {
+    public VertexArray[] getTriangleList() {
+        VertexArray[] localTriangles = getLocalTriangles();
+        for (VertexArray tri : localTriangles) {
             tri.addOffset(pos);
             tri.verticies().forEach(vector2f -> {
                 vector2f.mul(scale);
@@ -41,7 +41,7 @@ public abstract class PositionedRenderable extends ScaledRenderable {
         this.pos = pos;
     }
 
-    public Tri3[] getLocalTriangles() {
+    public VertexArray[] getLocalTriangles() {
         return null;
     }
 
