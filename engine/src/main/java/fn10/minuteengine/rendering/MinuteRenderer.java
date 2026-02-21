@@ -1,6 +1,5 @@
 package fn10.minuteengine.rendering;
 
-import fn10.minuteengine.rendering.renderables.base.Renderable;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
 import org.apache.logging.log4j.Level;
@@ -8,15 +7,13 @@ import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
-
-import fn10.minuteengine.util.MinuteVectorUtils;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL.createCapabilities;
+import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
@@ -26,11 +23,7 @@ import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.TemporalAmount;
-import java.util.Collections;
-import java.util.List;
 
 public final class MinuteRenderer {
     private long currentWindow;
@@ -93,6 +86,7 @@ public final class MinuteRenderer {
                     (vidmode.height() - pHeight.get(0)) / 2);
 
             GLFW.glfwMakeContextCurrent(currentWindow);
+            //vsync VVV
             //GLFW.glfwSwapInterval(1);
             GLFW.glfwShowWindow(currentWindow);
         }
@@ -119,13 +113,17 @@ public final class MinuteRenderer {
      * creation.
      */
     public void renderLoop(MinuteStateManager state) {
-        GL.createCapabilities();
+        createCapabilities();
 
-        GL11.glClearColor(0, 0, 0, 0);
+        glClearColor(0, 0, 0, 0);
+        //glCreateShader(GL_VERTEX_SHADER);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         while (!glfwWindowShouldClose(currentWindow)) {
             Instant begin = Instant.now();
-            GL11.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glEnableClientState(GL_VERTEX_ARRAY);
 
             vertexBuffer.flip();
