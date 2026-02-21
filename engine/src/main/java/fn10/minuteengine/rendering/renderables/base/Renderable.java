@@ -9,14 +9,14 @@ import java.nio.FloatBuffer;
 
 public abstract class Renderable {
     protected Colour3 colour = Colour3.WHITE;
-    public abstract Vector3fc[] getTriangleVerticies();
+    public abstract Vector3fc[] getTriangleVertices();
     public final float[] getVertexData() {
-        float[] triangleVerticies = MinuteVectorUtils.vector3ArrayToVertexArray(getTriangleVerticies());
-        FloatBuffer buffer = FloatBuffer.allocate(triangleVerticies.length * 2);
-        for (int i = 0; i < triangleVerticies.length/3; i++) {
-            buffer.put(triangleVerticies[i] * 3);
-            buffer.put(triangleVerticies[(i * 3 ) + 1]);
-            buffer.put(triangleVerticies[(i * 3 ) + 2]);
+        float[] triangleVertices = MinuteVectorUtils.vector3ArrayToVertexArray(getTriangleVertices());
+        FloatBuffer buffer = FloatBuffer.allocate(triangleVertices.length * 2);
+        for (int i = 0; i < triangleVertices.length/3; i++) {
+            buffer.put(triangleVertices[i * 3]);
+            buffer.put(triangleVertices[(i * 3 ) + 1]);
+            buffer.put(triangleVertices[(i * 3 ) + 2]);
             buffer.put(colour.toArray());
         }
         return buffer.array();

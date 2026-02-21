@@ -12,7 +12,7 @@ public class TestState extends State {
     @Override
     public void onRenderThread(MinuteRenderQueue queue) {
         queue.render(testTri);
-        testTri.getPos().add(0.00001f,-0.00001f);
+        testTri.getPos().add(0,0.00001f);
     }
 
     @Override
@@ -28,7 +28,7 @@ public class TestState extends State {
     @Override
     public void onLoad() {
         testTri.setScale(new Vector2f(0.25f,0.25f));
-        testTri.setColour(new Colour3(.5f,.5f,0f));
+        testTri.setColour(new Colour3(0.99f,0.99f,0.99f));
     }
 
 }

@@ -12,7 +12,7 @@ public abstract class PositionedRenderable extends ScaledRenderable {
     public Vector2f pos = new Vector2f(0, 0);
 
     @Override
-    public Vector3fc[] getTriangleVerticies() {
+    public Vector3fc[] getTriangleVertices() {
         Tri3[] triangleList = getTriangleList();
         //apparently specificing a length is faster
         ArrayList<Vector3fc> vec3s = new ArrayList<>(triangleList.length * 3);
