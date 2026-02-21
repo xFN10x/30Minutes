@@ -1,4 +1,5 @@
-//the position of the vertex as specified by our renderer
+#version 330
+
 attribute vec3 Position;
 
 void main() {
