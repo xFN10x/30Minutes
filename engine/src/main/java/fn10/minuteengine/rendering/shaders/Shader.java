@@ -17,7 +17,7 @@ public abstract class Shader implements AutoCloseable {
     protected int shaderID = -1;
     protected int vertShaderID = -1;
     protected int fragShaderID = -1;
-    private static Map<Class<? extends Shader>, Shader> compiledShaders = new HashMap<>();
+    private static final Map<Class<? extends Shader>, Shader> compiledShaders = new HashMap<>();
 
     public static Shader getShader(Class<? extends Shader> shaderType) {
         if (compiledShaders.containsKey(shaderType)) {

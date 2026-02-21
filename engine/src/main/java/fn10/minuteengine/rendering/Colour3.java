@@ -1,9 +1,9 @@
 package fn10.minuteengine.rendering;
 
 public final class Colour3 {
-    protected final float r;
-    protected final float g;
-    protected final float b;
+    private final float r;
+    private final float g;
+    private final float b;
 
     public static final Colour3 BLACK = new Colour3(0, 0, 0);
     public static final Colour3 WHITE = new Colour3(1f, 1f, 1f);

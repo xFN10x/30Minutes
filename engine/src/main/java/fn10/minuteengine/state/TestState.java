@@ -7,7 +7,7 @@ import fn10.minuteengine.rendering.MinuteRenderQueue;
 import fn10.minuteengine.rendering.renderables.Triangle;
 
 public class TestState extends State {
-    private Triangle testTri = new Triangle(new Vector2f(0,0));
+    private final Triangle testTri = new Triangle(new Vector2f(0,0));
 
     @Override
     public void onRenderThread(MinuteRenderQueue queue) {
