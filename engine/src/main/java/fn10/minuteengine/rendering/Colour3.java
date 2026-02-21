@@ -46,4 +46,8 @@ public final class Colour3 {
     public float getBlue() {
         return b;
     }
+
+    public float[] toArray() {
+        return new float[] {r,g,b};
+    }
 }

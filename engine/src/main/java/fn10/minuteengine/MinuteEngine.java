@@ -58,6 +58,9 @@ public final class MinuteEngine {
         renderer = MinuteRenderer.initRenderer();
         running = true;
         stateManager.changeState(stateManager.registerState(TestState.class));
+        renderThread.setUncaughtExceptionHandler((t, e) -> {
+            e.printStackTrace();
+        });
         mainLoop();
     }
 

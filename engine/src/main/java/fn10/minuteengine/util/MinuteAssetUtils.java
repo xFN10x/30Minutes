@@ -34,10 +34,30 @@ public class MinuteAssetUtils {
     @Nullable
     public static InputStream getStreamAsset(String path, @Nullable MinuteGame game) {
         try {
-            return  getAsset(path, game).openStream();
+            return getAsset(path, game).openStream();
         } catch (IOException e) {
             logger.log(Level.ERROR, "Failed to get asset as stream");
             return null;
         }
+    }
+
+    /**
+     * Read an entire asset's bytes
+     *
+     * @param path The path inside the assets folder to get. (e.g. {@code /font/opensans.ttf}) Set this to {@code null} to use internal assets.
+     * @return A byte array of the asset
+     */
+    public static byte[] readAssetFull(String path, @Nullable MinuteGame game) throws IOException {
+        return getStreamAsset(path, game).readAllBytes();
+    }
+
+    /**
+     * Read an entire asset's bytes, then create a string with them
+     *
+     * @param path The path inside the assets folder to get. (e.g. {@code /font/opensans.ttf}) Set this to {@code null} to use internal assets.
+     * @return A String of the bytes of the asset
+     */
+    public static String readAssetFullString(String path, @Nullable MinuteGame game) throws IOException {
+        return new String(readAssetFull(path, game));
     }
 }

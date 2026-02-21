@@ -7,13 +7,12 @@ import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
-import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryStack;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
-import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.system.MemoryUtil.memAllocFloat;
@@ -37,9 +36,11 @@ public final class MinuteRenderer {
     /**
      * A bool specifing if it's time to render things to screen currently.
      */
-    public volatile boolean inVBlank = false;
     public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue(this);
     public volatile FloatBuffer vertexBuffer = memAllocFloat(4000000);
+
+    private volatile int GLBuffer;
+    private volatile int GLArray;
 
     public MinuteRenderer() {
         Font defaultFont1;
@@ -52,6 +53,12 @@ public final class MinuteRenderer {
             defaultFont1 = Font.getFont(Font.SANS_SERIF);
         }
         defaultFont = defaultFont1;
+    }
+
+    public void shutdown() {
+        glDeleteVertexArrays(GLArray);
+        glDeleteBuffers(GLBuffer);
+
     }
 
     public long createWindow() {
@@ -115,22 +122,40 @@ public final class MinuteRenderer {
     public void renderLoop(MinuteStateManager state) {
         createCapabilities();
 
+        GLArray = glGenVertexArrays();
+        GLBuffer = glGenBuffers();
+
+        glBindVertexArray(GLArray);
+        glBindBuffer(GL_ARRAY_BUFFER, GLBuffer);
+
         glClearColor(0, 0, 0, 0);
-        //glCreateShader(GL_VERTEX_SHADER);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
+        //position
+        glVertexAttribPointer(0,3,GL_FLOAT, false, 24, 0);
+        glEnableVertexAttribArray(0);
+
+        //colour
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
+        glEnableVertexAttribArray(1);
+
         while (!glfwWindowShouldClose(currentWindow)) {
             Instant begin = Instant.now();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            glEnableClientState(GL_VERTEX_ARRAY);
+            //glEnableClientState(GL_VERTEX_ARRAY);
 
-            vertexBuffer.flip();
-            glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
-            glDrawArrays(GL_TRIANGLES, 0, vertexBuffer.limit()/3);
+            renderQueue.shaderVertQueue.forEach((shader, array) -> {
+                shader.use();
+                vertexBuffer.put(array).flip();
+                glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_DYNAMIC_DRAW);
+                glUniform1f(glGetUniformLocation(shader.getProgramID(), "me_Time"), (float) glfwGetTime());
+                //glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
+                glDrawArrays(GL_TRIANGLES, 0, (vertexBuffer.limit()/3) /2);
+            });
 
-            glDisableClientState(GL_VERTEX_ARRAY);
+            //glDisableClientState(GL_VERTEX_ARRAY);
             // push graphics to the window
             glfwSwapBuffers(currentWindow);
 
@@ -140,9 +165,10 @@ public final class MinuteRenderer {
             frc.frame();
             Instant end = Instant.now();
             Instant frameTime = end.minusNanos(begin.getNano());
-            logger.log(Level.INFO, "Frametime: {}", frameTime.getNano()/1000000000f);
-            logger.log(Level.INFO, "Framerate: {}", frc.getFrameRate());
+            //logger.log(Level.INFO, "Frametime: {}", frameTime.getNano()/1000000000f);
+            //logger.log(Level.INFO, "Framerate: {}", frc.getFrameRate());
         }
+        minu
     }
 
     public final class Renderer2D {

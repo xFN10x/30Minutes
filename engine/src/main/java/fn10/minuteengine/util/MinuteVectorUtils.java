@@ -35,7 +35,7 @@ public class MinuteVectorUtils {
         return vector2ArrayToVector3Array(vecs.toArray(new Vector2f[0]), z);
     }
 
-    public static float[] vector3ArrayToVertexAray(Vector3fc[] vec) {
+    public static float[] vector3ArrayToVertexArray(Vector3fc[] vec) {
         FloatBuffer buf = FloatBuffer.allocate(vec.length*3);
         for (Vector3fc vector3fc : vec) {
             buf.put(vector3fc.x());
