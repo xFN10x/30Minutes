@@ -45,6 +45,7 @@ public abstract class Shader implements AutoCloseable {
         compiledShaders.forEach((k,v) -> {
             v.close();
         });
+        compiledShaders.clear();
     }
 
     public void use() {

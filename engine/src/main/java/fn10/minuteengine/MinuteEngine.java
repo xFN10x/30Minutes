@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 
+import fn10.minuteengine.exception.FatalException;
 import fn10.minuteengine.state.MinuteStateManager;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -30,9 +31,11 @@ public final class MinuteEngine {
     public static int ERR_GAME_FAIL_LOAD_GENERIC = 10;
     public static int ERR_GAME_FAIL_LOAD_URL_ERROR = 11;
     public static int ERR_GAME_FAIL_LOAD_FAIL_READ = 12;
+    public static int ERR_RENDER_GENERIC = 20;
+    public static int ERR_RENDER_INIT_FAIL = 200;
     public static int ERR_GENERIC = 90;
     public static int ERR_NO_GAME_TO_LAUNCH = 91;
-    public static int NO_ERR = -1;
+    public static int NO_ERR = 0;
     public static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
     private URLClassLoader loader;
@@ -55,13 +58,24 @@ public final class MinuteEngine {
     private boolean running = false;
 
     public void start() {
-        renderer = MinuteRenderer.initRenderer();
+        renderer = MinuteRenderer.initRenderer(this);
         running = true;
         stateManager.changeState(stateManager.registerState(TestState.class));
-        renderThread.setUncaughtExceptionHandler((t, e) -> {
-            e.printStackTrace();
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            logger.log(Level.FATAL, "Uncaught Exception in " + t.getName(), e);
+            if (e instanceof FatalException) {
+                exitWithCode(((FatalException) e).crashCode);
+            }
+            else exitWithCode(ERR_GENERIC);
         });
         mainLoop();
+    }
+
+    public void stop() {
+        logger.info("Stopping Engine...");
+        logger.info("Stopping Renderer...");
+        renderer.shutdown();
+        exitWithCode(NO_ERR);
     }
 
     public int loadGameJar(Path jarPath, String op) {
@@ -99,7 +113,7 @@ public final class MinuteEngine {
         }
 
         logger.info("Loaded game: {}", info.name());
-        return -1;
+        return NO_ERR;
     }
 
     /**

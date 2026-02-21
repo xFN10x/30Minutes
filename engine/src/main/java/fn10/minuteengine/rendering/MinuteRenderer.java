@@ -1,5 +1,8 @@
 package fn10.minuteengine.rendering;
 
+import fn10.minuteengine.MinuteEngine;
+import fn10.minuteengine.exception.FatalException;
+import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
 import org.apache.logging.log4j.Level;
@@ -26,6 +29,7 @@ import java.time.Instant;
 
 public final class MinuteRenderer {
     private long currentWindow;
+    private final MinuteEngine engine;
 
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
@@ -42,7 +46,8 @@ public final class MinuteRenderer {
     private volatile int GLBuffer;
     private volatile int GLArray;
 
-    public MinuteRenderer() {
+    public MinuteRenderer(MinuteEngine engine) {
+        this.engine = engine;
         Font defaultFont1;
         try {
             InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
@@ -58,14 +63,14 @@ public final class MinuteRenderer {
     public void shutdown() {
         glDeleteVertexArrays(GLArray);
         glDeleteBuffers(GLBuffer);
-
+        Shader.closeAllShaders();
     }
 
     public long createWindow() {
         GLFWErrorCallback.createPrint(System.err).set();
 
         if (!GLFW.glfwInit()) {
-            throw new IllegalStateException("Unable to initialize GLFW");
+            throw new FatalException("Unable to create GLFW Window", MinuteEngine.ERR_RENDER_INIT_FAIL);
         }
 
         GLFW.glfwDefaultWindowHints();
@@ -74,7 +79,7 @@ public final class MinuteRenderer {
 
         currentWindow = GLFW.glfwCreateWindow(gameSize.x(), gameSize.y(), "MinuteEngine", NULL, NULL);
         if (currentWindow == NULL) {
-            throw new IllegalStateException("Unable to create GLFW Window");
+            throw new FatalException("Unable to create GLFW Window", MinuteEngine.ERR_RENDER_INIT_FAIL);
         }
 
         GLFW.glfwSetKeyCallback(currentWindow, (window, key, scancode, action, mods) -> {
@@ -88,7 +93,7 @@ public final class MinuteRenderer {
 
             GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
             if (vidmode == null)
-                throw new IllegalStateException("Unable to create GLFW Window");
+                throw new FatalException("Unable to create GLFW Window", MinuteEngine.ERR_RENDER_INIT_FAIL);
             GLFW.glfwSetWindowPos(currentWindow, (vidmode.width() - pWidth.get(0)) / 2,
                     (vidmode.height() - pHeight.get(0)) / 2);
 
@@ -101,15 +106,15 @@ public final class MinuteRenderer {
         return currentWindow;
     }
 
-    public static MinuteRenderer initRenderer() {
+    public static MinuteRenderer initRenderer(MinuteEngine engine) {
         glfwInit();
 
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-        return new MinuteRenderer();
+        return new MinuteRenderer(engine);
     }
 
     /**
@@ -168,7 +173,7 @@ public final class MinuteRenderer {
             //logger.log(Level.INFO, "Frametime: {}", frameTime.getNano()/1000000000f);
             //logger.log(Level.INFO, "Framerate: {}", frc.getFrameRate());
         }
-        minu
+        engine.stop();
     }
 
     public final class Renderer2D {
