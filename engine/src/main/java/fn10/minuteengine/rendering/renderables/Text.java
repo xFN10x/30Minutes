@@ -1,19 +1,16 @@
 package fn10.minuteengine.rendering.renderables;
 
-import fn10.minuteengine.exception.rendering.shaders.ShaderLoadException;
 import fn10.minuteengine.rendering.VertexArray;
-import fn10.minuteengine.rendering.renderables.base.PositionedRenderable;
+import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.rendering.shaders.TestShader;
 import org.joml.Vector2ic;
 import org.joml.Vector3ic;
 
-import java.io.IOException;
-
 /**
  * https://stackoverflow.com/questions/19182843/write-text-on-the-screen-with-lwjgl
  */
-public class Text extends PositionedRenderable {
+public class Text extends WorldPositionedRenderable {
 
     private final String text;
     private final Vector2ic textPos;

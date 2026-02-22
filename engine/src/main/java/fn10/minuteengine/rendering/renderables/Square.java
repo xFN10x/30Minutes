@@ -2,14 +2,14 @@ package fn10.minuteengine.rendering.renderables;
 
 import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.VertexArray;
-import fn10.minuteengine.rendering.renderables.base.PositionedRenderable;
+import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.rendering.shaders.TestShader;
 import org.joml.Vector2f;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
-public class Square extends PositionedRenderable {
+public class Square extends WorldPositionedRenderable {
     public Square(Vector2f pos) {
         this.pos = pos;
     }

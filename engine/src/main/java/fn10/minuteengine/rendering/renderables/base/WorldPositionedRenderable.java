@@ -6,8 +6,9 @@ import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 
-public abstract class PositionedRenderable extends ScaledRenderable {
-    public Vector2f pos = new Vector2f(0, 0);
+public abstract class WorldPositionedRenderable extends Renderable {
+    protected final Vector2f scale = new Vector2f();
+    protected Vector2f pos = new Vector2f(0, 0);
 
     public final Vector3fc[] getTriangleVertices() {
         return MinuteVectorFloatUtils.vector2ArrayToVector3Array(getVertexArray().verticies(), 0);
@@ -35,5 +36,14 @@ public abstract class PositionedRenderable extends ScaledRenderable {
     }
 
     public abstract VertexArray getLocalVertexArray();
+
+
+    public Vector2f getScale() {
+        return scale;
+    }
+
+    public void setScale(Vector2fc to) {
+        scale.set(to);
+    }
 
 }
