@@ -5,12 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fn10.minuteengine.util.MinuteVectorFloatUtils;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
 public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies, ArrayList<Vector2f> UV) {
-    public VertexArray(Colour3 colour, Vector2f[] verticies, Vector2f[] UV) {
-        this(colour, new ArrayList<Vector2f>(List.of(verticies)), new ArrayList<>(List.of(UV)));
+    public VertexArray(@NotNull Colour3 colour, @NotNull Vector2f[] verticies, @NotNull Vector2f[] UV) {
+        this(colour, new ArrayList<>(List.of(verticies)), new ArrayList<>(List.of(UV)));
+    }
+
+    public VertexArray(@NotNull Colour3 colour, @NotNull Vector2f[] verticies) {
+        this(colour, new ArrayList<>(List.of(verticies)), new ArrayList<Vector2f>());
+        for (int i = 0; i < verticies().size(); i++) {
+            UV().add(new Vector2f(0,0));
+        }
     }
 
     public void addOffset(Vector2fc offset) {
@@ -24,8 +32,8 @@ public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies, ArrayLi
         UV.forEach(vec -> {
             newUV.add(vec.add(offset));
         });
-        verticies.clear();
-        verticies.addAll(newUV);
+        UV.clear();
+        UV.addAll(newUV);
     }
 
     /**
