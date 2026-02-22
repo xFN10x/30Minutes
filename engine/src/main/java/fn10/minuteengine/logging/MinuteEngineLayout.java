@@ -1,5 +1,7 @@
 package fn10.minuteengine.logging;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -37,7 +39,7 @@ public class MinuteEngineLayout extends AbstractStringLayout {
             builder.append(Purple);
         } else if (event.getLevel().isInRange(Level.WARN, Level.ALL)) {
             builder.append(Yellow);
-        } else if (event.getLevel().isInRange(Level.ERROR, Level.ALL)) {
+        } else if (event.getLevel().isInRange(Level.FATAL, Level.ALL)) {
             builder.append(Red);
         }
 
@@ -53,8 +55,21 @@ public class MinuteEngineLayout extends AbstractStringLayout {
         if (event.getLevel().isInRange(Level.INFO, Level.ALL))
             builder.append(Reset);
         builder.append(event.getMessage().getFormattedMessage());
-        builder.append(Reset);
-        builder.append("\n");
+
+        Throwable thrown = event.getThrown();
+        if (thrown != null) {
+            builder.append("\n");
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            PrintStream printStream = new PrintStream(byteArrayOutputStream);
+            thrown.printStackTrace(printStream);
+            builder.append(
+                    byteArrayOutputStream.toString(Charset.defaultCharset()));
+            builder.append(Reset);
+            builder.append("\n");
+        } else {
+            builder.append(Reset);
+            builder.append("\n");
+        }
         return builder.toString();
     }
 
