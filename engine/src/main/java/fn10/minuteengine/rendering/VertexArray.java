@@ -28,12 +28,12 @@ public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies, ArrayLi
         });
         verticies.clear();
         verticies.addAll(newVerts);
-        ArrayList<Vector2f> newUV = new ArrayList<>();
+        /*ArrayList<Vector2f> newUV = new ArrayList<>();
         UV.forEach(vec -> {
             newUV.add(vec.add(offset));
         });
         UV.clear();
-        UV.addAll(newUV);
+        UV.addAll(newUV);*/
     }
 
     /**

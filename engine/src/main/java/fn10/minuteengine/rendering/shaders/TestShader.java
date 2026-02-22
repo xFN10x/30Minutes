@@ -5,7 +5,7 @@ import java.io.IOException;
 public class TestShader extends Shader {
 
     public TestShader() throws IOException {
-        super(getShaderCode(ShaderType.VERTEX, "Vertex"), getShaderCode(ShaderType.FRAGMENT, "Frag"));
+        super(getShaderCode(ShaderType.VERTEX, "Vertex"), getShaderCode(ShaderType.FRAGMENT, "TextureFrag"));
     }
 
 

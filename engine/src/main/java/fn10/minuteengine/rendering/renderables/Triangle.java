@@ -22,12 +22,13 @@ public class Triangle extends WorldPositionedRenderable {
                 new Vector2f[]{
                         new Vector2f(0.0f, 0.5f),
                         new Vector2f(-0.5f, -0.5f),
-                        new Vector2f(0.5f, -0.5f)},
+                        new Vector2f(0.5f, -0.5f)}
                 //uv
-                new Vector2f[]{
+                /*, new Vector2f[]{
                         new Vector2f(0.5f, 1f),
                         new Vector2f(0f, 0f),
-                        new Vector2f(1f, 0f)});
+                        new Vector2f(1f, 0f)}*/
+        );
     }
 
     @Override

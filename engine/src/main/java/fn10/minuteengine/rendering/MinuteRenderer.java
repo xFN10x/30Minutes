@@ -5,8 +5,11 @@ import fn10.minuteengine.exception.FatalException;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
+import fn10.minuteengine.util.Two;
 import org.apache.logging.log4j.Level;
+import org.joml.Vector2fc;
 import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -15,6 +18,29 @@ import org.lwjgl.system.MemoryStack;
 import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
+import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
+import static org.lwjgl.opengl.GL11.glClear;
+import static org.lwjgl.opengl.GL11.glClearColor;
+import static org.lwjgl.opengl.GL11.glDrawElements;
+import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
+import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL15.glBindBuffer;
+import static org.lwjgl.opengl.GL15.glBufferData;
+import static org.lwjgl.opengl.GL15.glDeleteBuffers;
+import static org.lwjgl.opengl.GL15.glGenBuffers;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glGetUniformLocation;
+import static org.lwjgl.opengl.GL20.glUniform1f;
+import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
+import static org.lwjgl.opengl.GL30.glGenVertexArrays;
 import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -32,7 +58,7 @@ public final class MinuteRenderer {
     private final MinuteEngine engine;
 
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
-    public Vector2i gameSize = new Vector2i(1280, 720);
+    public Vector2i gameSize = new Vector2i(720, 720);
     public final Font defaultFont;
     private final FrameRateCounter frc = new FrameRateCounter();
 
@@ -136,10 +162,7 @@ public final class MinuteRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, GLBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLElementArray);
 
-        glClearColor(0, 0, 0, 0);
-
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glClearColor(0.1f, 0.1f, 0.1f, 0);
 
         //position
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
@@ -158,19 +181,27 @@ public final class MinuteRenderer {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //glEnableClientState(GL_VERTEX_ARRAY);
 
-            renderQueue.shaderVertQueue.forEach((array, shader) -> {
+            renderQueue.shaderVertQueue.forEach((id, data) -> {
+                float[] vertBuffer = data.getLeft();
+                int[] indBuffer = data.getRight().getLeft();
+                Shader shader = data.getRight().getRight();
                 shader.use();
-                glBufferData(GL_ARRAY_BUFFER, array.getLeft(), GL_DYNAMIC_DRAW);
-                glBufferData(GL_ELEMENT_ARRAY_BUFFER, array.getRight(), GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, vertBuffer, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, indBuffer, GL_DYNAMIC_DRAW);
                 glUniform1f(glGetUniformLocation(shader.getProgramID(), "me_Time"), (float) glfwGetTime());
-                glDrawElements(GL_TRIANGLES, array.getLeft().length / 8 * (array.getRight().length/3), GL_UNSIGNED_INT, 0);
+                if (renderQueue.textures.containsKey(id)) {
+                    //this has texture
+                    Texture texture = renderQueue.textures.get(id);
+                    texture.bind();
+                    glUniform1i(glGetUniformLocation(shader.getProgramID(), "tex"), 0);
+                }
+                glBindVertexArray(GLArray);
+                glDrawElements(GL_TRIANGLES, indBuffer.length, GL_UNSIGNED_INT, 0);
             });
 
-            //glDisableClientState(GL_VERTEX_ARRAY);
             // push graphics to the window
             glfwSwapBuffers(currentWindow);
 
-            //vertexBuffer.clear();
             renderQueue.shaderVertQueue.clear();
             glfwPollEvents();
             state.currentState.onRenderThread(renderQueue);
@@ -191,5 +222,4 @@ public final class MinuteRenderer {
             buffer.createGraphics();
             return buffer;
         }
-    }
-}
+    }}

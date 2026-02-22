@@ -8,8 +8,8 @@ import fn10.minuteengine.rendering.MinuteRenderQueue;
 import fn10.minuteengine.rendering.renderables.Triangle;
 
 public class TestState extends State {
-    private final Triangle testTri = new Triangle(new Vector2f(0,0));
-    private final Square testSquare = new Square(new Vector2f(0,0));
+    private final Triangle testTri = new Triangle(new Vector2f(.5f,0));
+    private final Square testSquare = new Square(new Vector2f(-.5f,0));
 
     @Override
     public void onRenderThread(MinuteRenderQueue queue) {
