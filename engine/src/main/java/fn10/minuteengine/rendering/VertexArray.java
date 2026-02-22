@@ -4,16 +4,13 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import fn10.minuteengine.util.MinuteVectorUtils;
+import fn10.minuteengine.util.MinuteVectorFloatUtils;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-/**
- * A triangle using 3 floats for each vertex.
- */
-public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies) {
-    public VertexArray(Colour3 colour, Vector2f[] verticies) {
-        this(colour, new ArrayList<Vector2f>(List.of(verticies)));
+public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies, ArrayList<Vector2f> UV) {
+    public VertexArray(Colour3 colour, Vector2f[] verticies, Vector2f[] UV) {
+        this(colour, new ArrayList<Vector2f>(List.of(verticies)), new ArrayList<>(List.of(UV)));
     }
 
     public void addOffset(Vector2fc offset) {
@@ -23,6 +20,12 @@ public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies) {
         });
         verticies.clear();
         verticies.addAll(newVerts);
+        ArrayList<Vector2f> newUV = new ArrayList<>();
+        UV.forEach(vec -> {
+            newUV.add(vec.add(offset));
+        });
+        verticies.clear();
+        verticies.addAll(newUV);
     }
 
     /**
@@ -34,7 +37,7 @@ public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies) {
     public static FloatBuffer createVertexBuffer(VertexArray... tris) {
         FloatBuffer buf = FloatBuffer.allocate(tris.length * 9);
         for (VertexArray tri3 : tris) {
-            buf.put(MinuteVectorUtils.vector2ArrayToVertexArray(tri3.verticies, 0));
+            buf.put(MinuteVectorFloatUtils.vector2ArrayToFloats(tri3.verticies, 0));
         }
         return buf.flip();
     }

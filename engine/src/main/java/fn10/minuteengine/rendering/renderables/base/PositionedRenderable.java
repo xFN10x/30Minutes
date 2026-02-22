@@ -1,36 +1,29 @@
 package fn10.minuteengine.rendering.renderables.base;
 
 import fn10.minuteengine.rendering.VertexArray;
-import fn10.minuteengine.util.MinuteVectorUtils;
+import fn10.minuteengine.util.MinuteVectorFloatUtils;
 import org.joml.Vector2f;
+import org.joml.Vector2fc;
 import org.joml.Vector3fc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class PositionedRenderable extends ScaledRenderable {
     public Vector2f pos = new Vector2f(0, 0);
 
-    @Override
-    public Vector3fc[] getTriangleVertices() {
-        VertexArray[] triangleList = getTriangleList();
-        //apparently specificing a length is faster
-        ArrayList<Vector3fc> vec3s = new ArrayList<>(triangleList.length * 3);
-        for (VertexArray tri3 : triangleList) {
-            vec3s.addAll(List.of(MinuteVectorUtils.vector2ArrayToVector3Array(tri3.verticies(), 0)));
-        }
-        return vec3s.toArray(new Vector3fc[0]);
+    public final Vector3fc[] getTriangleVertices() {
+        return MinuteVectorFloatUtils.vector2ArrayToVector3Array(getVertexArray().verticies(), 0);
     }
 
-    public VertexArray[] getTriangleList() {
-        VertexArray[] localTriangles = getLocalTriangles();
-        for (VertexArray tri : localTriangles) {
-            tri.addOffset(pos);
-            tri.verticies().forEach(vector2f -> {
-                vector2f.mul(scale);
-            });
-        }
-        return localTriangles;
+    public final Vector2fc[] getUV() {
+        return getVertexArray().UV().toArray(new Vector2f[0]);
+    }
+
+    public VertexArray getVertexArray() {
+        VertexArray localTriangle = getLocalVertexArray();
+        localTriangle.addOffset(pos);
+        localTriangle.verticies().forEach(vector2f -> {
+            vector2f.mul(scale);
+        });
+        return localTriangle;
     }
 
     public Vector2f getPos() {
@@ -41,8 +34,6 @@ public abstract class PositionedRenderable extends ScaledRenderable {
         this.pos = pos;
     }
 
-    public VertexArray[] getLocalTriangles() {
-        return null;
-    }
+    public abstract VertexArray getLocalVertexArray();
 
 }

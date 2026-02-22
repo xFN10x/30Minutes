@@ -4,17 +4,19 @@ import java.util.HashMap;
 
 import fn10.minuteengine.rendering.renderables.base.Renderable;
 import fn10.minuteengine.rendering.shaders.Shader;
-import fn10.minuteengine.util.MinuteVectorUtils;
+import fn10.minuteengine.util.MinuteVectorFloatUtils;
+import fn10.minuteengine.util.MinuteVectorIntUtils;
+import fn10.minuteengine.util.Two;
 
 public class MinuteRenderQueue {
     private final MinuteRenderer renderer;
-    protected final HashMap<Shader, float[]> shaderVertQueue = new HashMap<>();
+    protected final HashMap<Two<float[], int[]>, Shader> shaderVertQueue = new HashMap<>();
 
     public MinuteRenderQueue(MinuteRenderer renderer) {
         this.renderer = renderer;
     }
 
     public void render(Renderable renderable) {
-        shaderVertQueue.put(renderable.getShader(), renderable.getVertexData());
+        shaderVertQueue.put(new Two<>(renderable.getVertexData(), MinuteVectorIntUtils.vector3ArrayToInts(renderable.getIndices())), renderable.getShader());
     }
 }

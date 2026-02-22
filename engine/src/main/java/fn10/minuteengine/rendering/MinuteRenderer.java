@@ -34,17 +34,18 @@ public final class MinuteRenderer {
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
     public final Font defaultFont;
-    private  final FrameRateCounter frc = new FrameRateCounter();
+    private final FrameRateCounter frc = new FrameRateCounter();
 
 
     /**
      * A bool specifing if it's time to render things to screen currently.
      */
     public volatile MinuteRenderQueue renderQueue = new MinuteRenderQueue(this);
-    public volatile FloatBuffer vertexBuffer = memAllocFloat(4000000);
+    //public volatile FloatBuffer vertexBuffer = memAllocFloat(4000000);
 
     private volatile int GLBuffer;
     private volatile int GLArray;
+    private volatile int GLElementArray;
 
     public MinuteRenderer(MinuteEngine engine) {
         this.engine = engine;
@@ -129,9 +130,11 @@ public final class MinuteRenderer {
 
         GLArray = glGenVertexArrays();
         GLBuffer = glGenBuffers();
+        GLElementArray = glGenBuffers();
 
         glBindVertexArray(GLArray);
         glBindBuffer(GL_ARRAY_BUFFER, GLBuffer);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLElementArray);
 
         glClearColor(0, 0, 0, 0);
 
@@ -139,32 +142,36 @@ public final class MinuteRenderer {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
         //position
-        glVertexAttribPointer(0,3,GL_FLOAT, false, 24, 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
         glEnableVertexAttribArray(0);
 
         //colour
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
+        glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
         glEnableVertexAttribArray(1);
+
+        //uv
+        glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
+        glEnableVertexAttribArray(2);
 
         while (!glfwWindowShouldClose(currentWindow)) {
             Instant begin = Instant.now();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             //glEnableClientState(GL_VERTEX_ARRAY);
 
-            renderQueue.shaderVertQueue.forEach((shader, array) -> {
+            renderQueue.shaderVertQueue.forEach((array, shader) -> {
                 shader.use();
-                vertexBuffer.put(array).flip();
-                glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_DYNAMIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, array.getLeft(), GL_DYNAMIC_DRAW);
+                glBufferData(GL_ELEMENT_ARRAY_BUFFER, array.getRight(), GL_DYNAMIC_DRAW);
                 glUniform1f(glGetUniformLocation(shader.getProgramID(), "me_Time"), (float) glfwGetTime());
-                //glVertexPointer(3, GL_FLOAT, 0, vertexBuffer);
-                glDrawArrays(GL_TRIANGLES, 0, (vertexBuffer.limit()/3) /2);
+                glDrawElements(GL_TRIANGLES, array.getLeft().length / 8 * (array.getRight().length/3), GL_UNSIGNED_INT, 0);
             });
 
             //glDisableClientState(GL_VERTEX_ARRAY);
             // push graphics to the window
             glfwSwapBuffers(currentWindow);
 
-            vertexBuffer.clear();
+            //vertexBuffer.clear();
+            renderQueue.shaderVertQueue.clear();
             glfwPollEvents();
             state.currentState.onRenderThread(renderQueue);
             frc.frame();
@@ -177,12 +184,12 @@ public final class MinuteRenderer {
     }
 
     public final class Renderer2D {
-          private BufferedImage buffer = null;
+        private BufferedImage buffer = null;
 
-          public BufferedImage createBuffer(int width, int height) {
-              buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-              buffer.createGraphics();
-              return buffer;
-          }
+        public BufferedImage createBuffer(int width, int height) {
+            buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            buffer.createGraphics();
+            return buffer;
+        }
     }
 }
