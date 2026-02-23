@@ -18,7 +18,7 @@ public class TestState extends State {
         queue.render(testTri);
         queue.render(testSquare);
         testTri.getPos().add(0,0.1f);
-        testSquare.getPos().add(-1f,-1f);
+        testSquare.getPos().add(-0.1f,-0.1f);
     }
 
     @Override
