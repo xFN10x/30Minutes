@@ -6,14 +6,15 @@ import fn10.minuteengine.rendering.VertexArray;
 import fn10.minuteengine.rendering.renderables.base.TexturedRenderable;
 import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
+import fn10.minuteengine.rendering.shaders.SolidColourShader;
 import fn10.minuteengine.rendering.shaders.TestShader;
 import org.joml.Vector2f;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
-public class Square extends WorldPositionedRenderable implements TexturedRenderable {
-    public Square(Vector2f pos) {
-        this.pos = pos;
+public class Square extends WorldPositionedRenderable {
+    public Square(Vector2f Position, Vector2f Scale) {
+        super(Position, Scale);
     }
 
     public VertexArray getLocalVertexArray() {
@@ -25,13 +26,6 @@ public class Square extends WorldPositionedRenderable implements TexturedRendera
                         new Vector2f(-0.5f, 0.5f), //top-left
                         new Vector2f(-0.5f, -0.5f), //bottom-left
                         new Vector2f(0.5f, -0.5f) //bottom-right
-                },
-                //uv
-                new Vector2f[]{
-                        new Vector2f(1f, 1f),
-                        new Vector2f(0f, 1f),
-                        new Vector2f(0f, 0f),
-                        new Vector2f(1f, 0f)
                 });
     }
 
@@ -49,11 +43,6 @@ public class Square extends WorldPositionedRenderable implements TexturedRendera
 
     @Override
     public Shader getShader() {
-        return Shader.getShader(TestShader.class);
-    }
-
-    @Override
-    public Texture getTexture() {
-        return Texture.ofTest();
+        return Shader.getShader(SolidColourShader.class);
     }
 }

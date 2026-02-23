@@ -1,6 +1,8 @@
 package fn10.minuteengine.rendering;
 
+import fn10.minuteengine.rendering.renderables.Text;
 import fn10.minuteengine.util.MinuteAssetUtils;
+import fn10.minuteengine.util.MinuteVectorIntUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
@@ -13,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
 import static org.lwjgl.opengl.GL11.GL_REPEAT;
@@ -34,6 +37,7 @@ public class Texture {
     private Vector2ic size;
     private final ByteBuffer data;
     private final int GLTexture;
+    private static final HashMap<Long, Texture> cached = new HashMap<>();
 
     private Texture(Vector2ic size, BufferedImage bi) {
         this.size = size;
@@ -98,5 +102,22 @@ public class Texture {
 
     public static Texture ofTest() {
         return test;
+    }
+    
+    /**
+     * Creates, or gets a cached texture 
+     * @param id The ID of the texture
+     * @param bi The texture as a BufferedImage
+     * @return A new texture if an instance of it with the suppliled ID doesn't exist, or 
+     */
+    public static Texture ofBufferedImage(Long id, BufferedImage bi) {
+        if (cached.containsKey(id)) {
+            return cached.get(id);
+        }
+        else 
+        {
+            cached.put(id, new Texture(MinuteVectorIntUtils.getBufferedImageSize(bi), bi));
+            return cached.get(id);
+        }
     }
 }

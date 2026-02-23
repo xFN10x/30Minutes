@@ -26,6 +26,7 @@ public final class MinuteStateManager {
 
     /**
      * Gets a state from the manager. This state is loaded before it is returned, this function does not start it.
+     *
      * @param id The long id of the state
      * @return The state after {@link State#onLoad()} is called.
      * @see MinuteStateManager#changeState(Long)
@@ -42,7 +43,7 @@ public final class MinuteStateManager {
             loaded.put(id, state);
             return state;
         } catch (Exception e) {
-            throw new StateLoadFailedException("The state: '" + stateClas.getName() +"' failed to load.");
+            throw new StateLoadFailedException("The state: '" + stateClas.getName() + "' failed to load.", e);
         }
     }
 
@@ -51,6 +52,7 @@ public final class MinuteStateManager {
      * <p/>
      * <p/>
      * TODO: Add support for loading multiple states.
+     *
      * @param id The long id of the state.
      * @return The state that got started.
      */

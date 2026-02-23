@@ -5,6 +5,7 @@ import org.joml.Vector2ic;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
+import java.awt.image.BufferedImage;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,5 +56,7 @@ public class MinuteVectorIntUtils {
         return buf.array();
     }
     
-    
+    public static Vector2i getBufferedImageSize(BufferedImage bi) {
+        return new Vector2i(bi.getWidth(), bi.getHeight());
+    }
 }

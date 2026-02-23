@@ -2,6 +2,7 @@ package fn10.minuteengine.state;
 
 import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.renderables.Square;
+import fn10.minuteengine.rendering.renderables.Text;
 import org.joml.Vector2f;
 
 import fn10.minuteengine.rendering.MinuteRenderQueue;
@@ -10,13 +11,15 @@ import fn10.minuteengine.rendering.renderables.Triangle;
 import static fn10.minuteengine.MinuteEngine.logger;
 
 public class TestState extends State {
-    private final Triangle testTri = new Triangle(new Vector2f(.5f,0));
-    private final Square testSquare = new Square(new Vector2f(-.5f,0));
+    private final Triangle testTri = new Triangle(new Vector2f(0.5f,0),new Vector2f(100f,100f));
+    private final Square testSquare = new Square(new Vector2f(-0.5f,0),new Vector2f(100f,100f));
+    private final Text testText = new Text("test textf aaaaaaaaaaaaaaaaaaaa", new Vector2f(0f,0f), new Vector2f(10f,10f));
 
     @Override
     public void onRenderThread(MinuteRenderQueue queue) {
         queue.render(testTri);
         queue.render(testSquare);
+        queue.render(testText);
         testTri.getPos().add(0,0.1f);
         testSquare.getPos().add(-0.1f,-0.1f);
     }
@@ -33,9 +36,7 @@ public class TestState extends State {
 
     @Override
     public void onLoad() {
-        testTri.setScale(new Vector2f(100f,100f));
         testTri.setColour(new Colour3(0.99f,0.99f,0.99f));
-        testSquare.setScale(new Vector2f(100f,100f));
         testSquare.setColour(new Colour3(0.49f,0.49f,0.99f));
     }
 

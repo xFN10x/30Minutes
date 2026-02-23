@@ -9,11 +9,16 @@ import org.joml.Vector2i;
 import org.joml.Vector3fc;
 
 public abstract class WorldPositionedRenderable extends Renderable {
-    protected final Vector2f scale = new Vector2f();
-    protected Vector2f pos = new Vector2f(0, 0);
+    protected final Vector2f scale;
+    protected final Vector2f pos;
 
     public final Vector3fc[] getTriangleVertices() {
         return MinuteVectorFloatUtils.vector2ArrayToVector3Array(getVertexArray().verticies(), 0);
+    }
+
+    protected WorldPositionedRenderable(Vector2f Position, Vector2f Scale) {
+        pos = Position;
+        scale = Scale;
     }
 
     public final Vector2fc[] getUV() {
@@ -29,7 +34,7 @@ public abstract class WorldPositionedRenderable extends Renderable {
         dest.mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
         localTriangle.addOffset(dest);
         localTriangle.verticies().forEach(vector2f -> {
-            vector2f.div(gameSize.y(), gameSize.y()).mul(scale.x * ((float) gameSize.y / gameSize.x), scale.y).mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
+            vector2f.mul(2).div(gameSize.y(), gameSize.y()).mul(scale.x * ((float) gameSize.y / gameSize.x), scale.y).mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
         });
         return localTriangle;
     }
@@ -39,7 +44,7 @@ public abstract class WorldPositionedRenderable extends Renderable {
     }
 
     public void setPos(Vector2f pos) {
-        this.pos = pos;
+        pos.set(pos);
     }
 
     public abstract VertexArray getLocalVertexArray();

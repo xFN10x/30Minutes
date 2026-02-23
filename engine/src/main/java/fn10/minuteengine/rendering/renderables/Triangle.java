@@ -2,6 +2,7 @@ package fn10.minuteengine.rendering.renderables;
 
 import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
+import fn10.minuteengine.rendering.shaders.SolidColourShader;
 import fn10.minuteengine.rendering.shaders.TestShader;
 import org.joml.Vector2f;
 
@@ -11,8 +12,8 @@ import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
 public class Triangle extends WorldPositionedRenderable {
-    public Triangle(Vector2f pos) {
-        this.pos = pos;
+    public Triangle(Vector2f Position, Vector2f Scale) {
+        super(Position, Scale);
     }
 
     public VertexArray getLocalVertexArray() {
@@ -23,11 +24,6 @@ public class Triangle extends WorldPositionedRenderable {
                         new Vector2f(0.0f, 0.5f),
                         new Vector2f(-0.5f, -0.5f),
                         new Vector2f(0.5f, -0.5f)}
-                //uv
-                /*, new Vector2f[]{
-                        new Vector2f(0.5f, 1f),
-                        new Vector2f(0f, 0f),
-                        new Vector2f(1f, 0f)}*/
         );
     }
 
@@ -42,6 +38,6 @@ public class Triangle extends WorldPositionedRenderable {
 
     @Override
     public Shader getShader() {
-        return Shader.getShader(TestShader.class);
+        return Shader.getShader(SolidColourShader.class);
     }
 }
