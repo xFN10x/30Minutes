@@ -1,6 +1,7 @@
 package fn10.minuteengine.rendering.renderables;
 
 import fn10.minuteengine.rendering.Colour3;
+import fn10.minuteengine.rendering.MinuteRenderer;
 import fn10.minuteengine.rendering.Texture;
 import fn10.minuteengine.rendering.VertexArray;
 import fn10.minuteengine.rendering.renderables.base.TexturedRenderable;
@@ -9,13 +10,12 @@ import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.rendering.shaders.TextureShader;
 import fn10.minuteengine.util.MinuteRandomUtils;
 
-import org.joml.Vector2f;
-import org.joml.Vector3i;
-import org.joml.Vector3ic;
+import org.joml.*;
 
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.lang.Math;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 
@@ -24,33 +24,42 @@ import static fn10.minuteengine.MinuteEngine.logger;
  */
 public class Text extends WorldPositionedRenderable implements TexturedRenderable {
 
-    private final String text;
-    private final FontMetrics metrics;
+    private  String text;
+    private  FontMetrics metrics;
     private BufferedImage bi;
     private Graphics2D graphics;
-    private final Rectangle2D textSize;
+    private  Vector4d textSize;
     private final Long id = MinuteRandomUtils.getUnqiueId(1);
+    private float fontSize;
 
     public Text(String text, Vector2f pos, Vector2f scale) {
+        this(text,pos,scale,32);
+    }
+    public Text(String text, Vector2f pos, Vector2f scale, float FontSize) {
         super(pos, scale);
         this.text = text;
+        this.fontSize = FontSize;
+        this.colour = Colour3.BLACK;
 
         bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         graphics = bi.createGraphics();
+        graphics.setFont(MinuteRenderer.defaultFont.deriveFont(FontSize));
+        setText(text);
+    }
 
-        this.colour = Colour3.BLACK;
+    public void setText(String text) {
+        Texture.clearCache(id);
+        this.text = text;
+        this.metrics = graphics.getFontMetrics();
+        Rectangle2D textSizeRect = metrics.getStringBounds(this.text, bi.getGraphics());
+        this.textSize = new Vector4d(textSizeRect.getX(), textSizeRect.getY(), textSizeRect.getWidth(), textSizeRect.getHeight());
 
-        //graphics.setFont(MinuteRenderer.defaultFont);
-        metrics = graphics.getFontMetrics();
-        textSize = metrics.getStringBounds(text, bi.getGraphics());
-        logger.info(textSize);
-
-        bi = new BufferedImage((int) textSize.getWidth(), (int) textSize.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        bi = new BufferedImage((int) textSize.z, (int) textSize.w, BufferedImage.TYPE_INT_ARGB);
         graphics = bi.createGraphics();
-        //graphics.setFont(MinuteRenderer.defaultFont);
+        graphics.setFont(MinuteRenderer.defaultFont.deriveFont(fontSize));
         graphics.setBackground(new Color(50,0,0,0));
         graphics.setColor(Color.WHITE);
-        graphics.drawString(text, 0, 12);
+        graphics.drawString(this.text, (int) textSize.x, Math.abs((int) textSize.y));
     }
 
     public String getText() {
@@ -76,8 +85,8 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
 
     @Override
     public VertexArray getLocalVertexArray() {
-        float height = (float) textSize.getHeight();
-        float width = (float) textSize.getWidth();
+        float height = (float) textSize.w();
+        float width = (float) textSize.z();
         return new VertexArray(
                 Colour3.BLACK,
                 new Vector2f[]{

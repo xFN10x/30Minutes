@@ -13,44 +13,20 @@ import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.system.MemoryStack;
 
-import static fn10.minuteengine.MinuteEngine.logger;
-import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL.createCapabilities;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glViewport;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform1f;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.NULL;
-
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.nio.IntBuffer;
 import java.time.Instant;
+
+import static fn10.minuteengine.MinuteEngine.logger;
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL.createCapabilities;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public final class MinuteRenderer {
     private long currentWindow;
@@ -59,20 +35,29 @@ public final class MinuteRenderer {
     // public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
     public static Font defaultFont;
+
     static {
         Font defaultFont1;
+        GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try {
             InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
             if (streamAsset == null)
                 throw new NullPointerException("Font Asset Not Found");
-            defaultFont1 = Font.createFont(Font.TRUETYPE_FONT, streamAsset);
+            defaultFont1 = Font.createFont(Font.TRUETYPE_FONT, streamAsset).deriveFont(Font.PLAIN, 64);
         } catch (Exception e) {
             logger.log(Level.ERROR, "Failed to load font; using fallback.");
-            defaultFont1 = Font.getFont(Font.SANS_SERIF);
+            defaultFont1 = localGraphicsEnvironment.getAllFonts()[0];
         }
         defaultFont = defaultFont1;
-        GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(defaultFont);
+        if (!localGraphicsEnvironment.registerFont(defaultFont)) {
+            logger.log(Level.ERROR, "Failed to load font; using fallback.");
+            defaultFont = localGraphicsEnvironment.getAllFonts()[0];
+        } else {
+            logger.info("Font loaded.");
+
+        }
     }
+
     private final FrameRateCounter frc = new FrameRateCounter();
     public static MinuteRenderer current;
 
@@ -95,6 +80,10 @@ public final class MinuteRenderer {
         glDeleteVertexArrays(GLArray);
         glDeleteBuffers(GLBuffer);
         Shader.closeAllShaders();
+    }
+
+    public FrameRateCounter getFrameRateCounter() {
+        return frc;
     }
 
     public long createWindow() {
@@ -143,6 +132,7 @@ public final class MinuteRenderer {
             }
         });
 
+        createCapabilities();
         return currentWindow;
     }
 
@@ -165,7 +155,6 @@ public final class MinuteRenderer {
      * creation.
      */
     public void renderLoop(MinuteStateManager state) {
-        createCapabilities();
 
         GLArray = glGenVertexArrays();
         GLBuffer = glGenBuffers();

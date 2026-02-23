@@ -11,7 +11,7 @@ import fn10.minuteengine.util.MinuteVectorIntUtils;
 import fn10.minuteengine.util.Two;
 
 public class MinuteRenderQueue {
-    private final MinuteRenderer renderer;
+    public final MinuteRenderer renderer;
     protected final HashMap<Long, Two<float[], Two<int[], Shader>>> shaderVertQueue = new HashMap<>();
     protected final HashMap<Long, Texture> textures = new HashMap<>();
 

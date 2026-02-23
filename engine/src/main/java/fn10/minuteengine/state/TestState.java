@@ -13,7 +13,7 @@ import static fn10.minuteengine.MinuteEngine.logger;
 public class TestState extends State {
     private final Triangle testTri = new Triangle(new Vector2f(0.5f,0),new Vector2f(100f,100f));
     private final Square testSquare = new Square(new Vector2f(-0.5f,0),new Vector2f(100f,100f));
-    private final Text testText = new Text("test textf aaaaaaaaaaaaaaaaaaaa", new Vector2f(0f,0f), new Vector2f(10f,10f));
+    private final Text testText = new Text("test textf aaaaaaaaaaaaaaaaaaaa", new Vector2f(0f,0f), new Vector2f(1f,1f), 128);
 
     @Override
     public void onRenderThread(MinuteRenderQueue queue) {
@@ -22,6 +22,7 @@ public class TestState extends State {
         queue.render(testText);
         testTri.getPos().add(0,0.1f);
         testSquare.getPos().add(-0.1f,-0.1f);
+        testText.setText(String.valueOf(queue.renderer.getFrameRateCounter().getFrameRate()));
     }
 
     @Override

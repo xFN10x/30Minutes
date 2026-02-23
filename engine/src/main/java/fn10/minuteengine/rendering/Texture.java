@@ -61,11 +61,11 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 
     public void bind() {
         glBindTexture(GL_TEXTURE_2D, GLTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     }
 
     public Vector2ic getSize() {
@@ -80,28 +80,33 @@ public class Texture {
         this.size = vec;
     }
 
-    private static final Texture test;
+    private static Texture test = null;
 
     static {
-        BufferedImage bi = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        BufferedImage out = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
-        try {
-            bi.createGraphics().drawImage(ImageIO.read(MinuteAssetUtils.getAsset("/test/img.png", null)), 0, 0, null);
-            //https://stackoverflow.com/questions/23457754/how-to-flip-bufferedimage-in-java
-            AffineTransform affineTransform = new AffineTransform();
-            affineTransform.concatenate(AffineTransform.getScaleInstance(1, -1));
-            affineTransform.concatenate(AffineTransform.getTranslateInstance(0, -64));
-            AffineTransformOp affineTransformOp = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-            affineTransformOp.filter(bi, out);
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        test = new Texture(new Vector2i(64, 64), out);
     }
 
     public static Texture ofTest() {
-        return test;
+        if (test == null) {
+            BufferedImage bi = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage out = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+            try {
+                bi.createGraphics().drawImage(ImageIO.read(MinuteAssetUtils.getAsset("/test/img.png", null)), 0, 0, null);
+                //https://stackoverflow.com/questions/23457754/how-to-flip-bufferedimage-in-java
+                AffineTransform affineTransform = new AffineTransform();
+                affineTransform.concatenate(AffineTransform.getScaleInstance(1, -1));
+                affineTransform.concatenate(AffineTransform.getTranslateInstance(0, -64));
+                AffineTransformOp affineTransformOp = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+                affineTransformOp.filter(bi, out);
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            test = new Texture(new Vector2i(64, 64), out);
+            return test;
+        }
+        else
+            return test;
     }
     
     /**
@@ -120,4 +125,7 @@ public class Texture {
             return cached.get(id);
         }
     }
+
+    public static void clearCache() {cached.clear();}
+    public static void clearCache(Long id) {cached.remove(id);}
 }
