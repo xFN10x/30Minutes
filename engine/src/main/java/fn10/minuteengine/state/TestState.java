@@ -33,9 +33,9 @@ public class TestState extends State {
 
     @Override
     public void onLoad() {
-        testTri.setScale(new Vector2f(0.25f,0.25f));
+        testTri.setScale(new Vector2f(100f,100f));
         testTri.setColour(new Colour3(0.99f,0.99f,0.99f));
-        testSquare.setScale(new Vector2f(0.25f,0.25f));
+        testSquare.setScale(new Vector2f(100f,100f));
         testSquare.setColour(new Colour3(0.49f,0.49f,0.99f));
     }
 
