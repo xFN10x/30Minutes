@@ -5,51 +5,24 @@ import fn10.minuteengine.exception.FatalException;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
-import fn10.minuteengine.util.Two;
 import org.apache.logging.log4j.Level;
-import org.joml.Vector2fc;
 import org.joml.Vector2i;
-import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallback;
 import org.lwjgl.system.MemoryStack;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL.createCapabilities;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.GL_FLOAT;
-import static org.lwjgl.opengl.GL11.GL_TRIANGLES;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_INT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
-import static org.lwjgl.opengl.GL11.glDrawElements;
-import static org.lwjgl.opengl.GL15.GL_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.GL_DYNAMIC_DRAW;
-import static org.lwjgl.opengl.GL15.GL_ELEMENT_ARRAY_BUFFER;
-import static org.lwjgl.opengl.GL15.glBindBuffer;
-import static org.lwjgl.opengl.GL15.glBufferData;
-import static org.lwjgl.opengl.GL15.glDeleteBuffers;
-import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glGetUniformLocation;
-import static org.lwjgl.opengl.GL20.glUniform1f;
-import static org.lwjgl.opengl.GL20.glUniform1i;
-import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
-import static org.lwjgl.opengl.GL30.glBindVertexArray;
-import static org.lwjgl.opengl.GL30.glDeleteVertexArrays;
-import static org.lwjgl.opengl.GL30.glGenVertexArrays;
-import static org.lwjgl.opengl.GL33.*;
+import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
-import static org.lwjgl.system.MemoryUtil.memAllocFloat;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
-import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.time.Instant;
 
@@ -58,10 +31,10 @@ public final class MinuteRenderer {
     private final MinuteEngine engine;
 
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
-    public Vector2i gameSize = new Vector2i(1280,720);
+    public Vector2i gameSize = new Vector2i(1280, 720);
     public final Font defaultFont;
     private final FrameRateCounter frc = new FrameRateCounter();
-
+    public static MinuteRenderer current;
 
     /**
      * A bool specifing if it's time to render things to screen currently.
@@ -75,6 +48,7 @@ public final class MinuteRenderer {
 
     public MinuteRenderer(MinuteEngine engine) {
         this.engine = engine;
+        current = this;
         Font defaultFont1;
         try {
             InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
@@ -110,6 +84,7 @@ public final class MinuteRenderer {
         }
 
         GLFW.glfwSetKeyCallback(currentWindow, (window, key, scancode, action, mods) -> {
+
         });
 
         try (MemoryStack stack = stackPush()) {
@@ -129,6 +104,14 @@ public final class MinuteRenderer {
             //GLFW.glfwSwapInterval(1);
             GLFW.glfwShowWindow(currentWindow);
         }
+
+        GLFW.glfwSetWindowSizeCallback(currentWindow, new GLFWWindowSizeCallback() {
+            @Override
+            public void invoke(long window, int width, int height) {
+                gameSize = new Vector2i(width,height);
+                glViewport(0,0, width, height);
+            }
+        });
 
         return currentWindow;
     }
@@ -222,4 +205,5 @@ public final class MinuteRenderer {
             buffer.createGraphics();
             return buffer;
         }
-    }}
+    }
+}

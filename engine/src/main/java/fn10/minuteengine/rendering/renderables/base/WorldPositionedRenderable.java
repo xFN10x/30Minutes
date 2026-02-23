@@ -1,9 +1,11 @@
 package fn10.minuteengine.rendering.renderables.base;
 
+import fn10.minuteengine.rendering.MinuteRenderer;
 import fn10.minuteengine.rendering.VertexArray;
 import fn10.minuteengine.util.MinuteVectorFloatUtils;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
+import org.joml.Vector2i;
 import org.joml.Vector3fc;
 
 public abstract class WorldPositionedRenderable extends Renderable {
@@ -19,12 +21,14 @@ public abstract class WorldPositionedRenderable extends Renderable {
     }
 
     public VertexArray getVertexArray() {
+        MinuteRenderer current = MinuteRenderer.current;
+        Vector2i gameSize = current.gameSize;
         VertexArray localTriangle = getLocalVertexArray();
         Vector2f dest = new Vector2f();
-        pos.div(720,720, dest);
+        pos.div(gameSize.y(),gameSize.y(), dest);
         localTriangle.addOffset(dest);
         localTriangle.verticies().forEach(vector2f -> {
-            vector2f.mul(scale.x * ((float) 9 /16), scale.y);
+            vector2f.mul(scale.x * ((float) gameSize.y / gameSize.x), scale.y);
         });
         return localTriangle;
     }
