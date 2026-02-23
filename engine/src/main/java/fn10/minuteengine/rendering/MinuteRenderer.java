@@ -165,9 +165,9 @@ public final class MinuteRenderer {
             //glEnableClientState(GL_VERTEX_ARRAY);
 
             renderQueue.shaderVertQueue.forEach((id, data) -> {
-                float[] vertBuffer = data.getLeft();
-                int[] indBuffer = data.getRight().getLeft();
-                Shader shader = data.getRight().getRight();
+                float[] vertBuffer = data.left();
+                int[] indBuffer = data.right().left();
+                Shader shader = data.right().right();
                 shader.use();
                 glBufferData(GL_ARRAY_BUFFER, vertBuffer, GL_DYNAMIC_DRAW);
                 glBufferData(GL_ELEMENT_ARRAY_BUFFER, indBuffer, GL_DYNAMIC_DRAW);

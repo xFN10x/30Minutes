@@ -25,11 +25,11 @@ public abstract class WorldPositionedRenderable extends Renderable {
         Vector2i gameSize = current.gameSize;
         VertexArray localTriangle = getLocalVertexArray();
         Vector2f dest = new Vector2f();
-        pos.div(gameSize.y(),gameSize.y(), dest);
+        pos.div(gameSize.y(), gameSize.y(), dest);
         dest.mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
         localTriangle.addOffset(dest);
         localTriangle.verticies().forEach(vector2f -> {
-            vector2f.div(gameSize.y(),gameSize.y()).mul(scale.x * ((float) gameSize.y / gameSize.x), scale.y).mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
+            vector2f.div(gameSize.y(), gameSize.y()).mul(scale.x * ((float) gameSize.y / gameSize.x), scale.y).mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
         });
         return localTriangle;
     }
