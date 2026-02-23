@@ -7,6 +7,8 @@ import org.joml.Vector2ic;
 
 import javax.imageio.ImageIO;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -41,7 +43,7 @@ public class Texture {
         int[] pixels = bi.getData().getPixels(0, 0, size.x(), size.y(), (int[]) null);
         ArrayList<Byte> bytes = new ArrayList<>();
         for (int pixel : pixels) {
-            bytes.add((byte)pixel);
+            bytes.add((byte) pixel);
         }
 
         data = memAlloc(4 * size.x() * size.y());
@@ -75,17 +77,26 @@ public class Texture {
     }
 
     private static final Texture test;
+
     static {
-        BufferedImage bi = new BufferedImage(64,64, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage bi = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+        BufferedImage out = new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
         try {
-            bi.createGraphics().drawImage(ImageIO.read(MinuteAssetUtils.getAsset("/test/img.png", null)),0,0, null);
-            bi.getGraphics().
+            bi.createGraphics().drawImage(ImageIO.read(MinuteAssetUtils.getAsset("/test/img.png", null)), 0, 0, null);
+            //https://stackoverflow.com/questions/23457754/how-to-flip-bufferedimage-in-java
+            AffineTransform affineTransform = new AffineTransform();
+            affineTransform.concatenate(AffineTransform.getScaleInstance(1, -1));
+            affineTransform.concatenate(AffineTransform.getTranslateInstance(0, -64));
+            AffineTransformOp affineTransformOp = new AffineTransformOp(affineTransform, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+            affineTransformOp.filter(bi, out);
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        test = new Texture(new Vector2i(64, 64), bi);
+        test = new Texture(new Vector2i(64, 64), out);
     }
+
     public static Texture ofTest() {
-            return test;
+        return test;
     }
 }

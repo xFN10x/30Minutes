@@ -58,7 +58,7 @@ public final class MinuteRenderer {
     private final MinuteEngine engine;
 
     //public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
-    public Vector2i gameSize = new Vector2i(720, 720);
+    public Vector2i gameSize = new Vector2i(1280,720);
     public final Font defaultFont;
     private final FrameRateCounter frc = new FrameRateCounter();
 

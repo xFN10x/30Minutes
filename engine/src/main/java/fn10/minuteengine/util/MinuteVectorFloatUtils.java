@@ -55,5 +55,4 @@ public class MinuteVectorFloatUtils {
         return buf.array();
     }
 
-
 }

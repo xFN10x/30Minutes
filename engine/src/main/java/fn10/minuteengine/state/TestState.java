@@ -7,6 +7,8 @@ import org.joml.Vector2f;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
 import fn10.minuteengine.rendering.renderables.Triangle;
 
+import static fn10.minuteengine.MinuteEngine.logger;
+
 public class TestState extends State {
     private final Triangle testTri = new Triangle(new Vector2f(.5f,0));
     private final Square testSquare = new Square(new Vector2f(-.5f,0));
@@ -15,8 +17,8 @@ public class TestState extends State {
     public void onRenderThread(MinuteRenderQueue queue) {
         queue.render(testTri);
         queue.render(testSquare);
-        testTri.getPos().add(0,0.00001f);
-        testSquare.getPos().add(-0.00001f,-0.00001f);
+        testTri.getPos().add(0,0.1f);
+        testSquare.getPos().add(-1f,-1f);
     }
 
     @Override

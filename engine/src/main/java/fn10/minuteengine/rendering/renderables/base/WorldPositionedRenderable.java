@@ -20,9 +20,11 @@ public abstract class WorldPositionedRenderable extends Renderable {
 
     public VertexArray getVertexArray() {
         VertexArray localTriangle = getLocalVertexArray();
-        localTriangle.addOffset(pos);
+        Vector2f dest = new Vector2f();
+        pos.div(720,720, dest);
+        localTriangle.addOffset(dest);
         localTriangle.verticies().forEach(vector2f -> {
-            vector2f.mul(scale);
+            vector2f.mul(scale.x * ((float) 9 /16), scale.y);
         });
         return localTriangle;
     }
