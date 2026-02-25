@@ -33,7 +33,6 @@ public class MinuteAudioEngine {
         try {
             audioInputStream = AudioSystem.getAudioInputStream(MinuteAssetUtils.getAsset("/test/test.wav", null));
             AudioFormat format = audioInputStream.getFormat();
-            logger.info(format.getSampleSizeInBits());
             ByteBuffer buf = BufferUtils.createByteBuffer(audioInputStream.available());
             buf.put(audioInputStream.readAllBytes());
             buf.flip();
