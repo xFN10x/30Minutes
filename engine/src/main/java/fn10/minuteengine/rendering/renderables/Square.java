@@ -22,10 +22,10 @@ public class Square extends WorldPositionedRenderable {
                 Colour3.WHITE,
                 //pos
                 new Vector2f[]{
-                        new Vector2f(0.5f, 0.5f), //top-right
-                        new Vector2f(-0.5f, 0.5f), //top-left
-                        new Vector2f(-0.5f, -0.5f), //bottom-left
-                        new Vector2f(0.5f, -0.5f) //bottom-right
+                        new Vector2f(1, 1), //top-right
+                        new Vector2f(0, 1), //top-left
+                        new Vector2f(0, 0), //bottom-left
+                        new Vector2f(1, 0) //bottom-right
                 });
     }
 

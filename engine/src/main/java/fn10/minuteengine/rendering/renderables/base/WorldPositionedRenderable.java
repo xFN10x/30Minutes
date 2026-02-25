@@ -8,6 +8,8 @@ import org.joml.Vector2fc;
 import org.joml.Vector2i;
 import org.joml.Vector3fc;
 
+import static fn10.minuteengine.MinuteEngine.logger;
+
 public abstract class WorldPositionedRenderable extends Renderable {
     protected final Vector2f scale;
     protected final Vector2f pos;
@@ -30,7 +32,7 @@ public abstract class WorldPositionedRenderable extends Renderable {
         Vector2i gameSize = current.gameSize;
         VertexArray localTriangle = getLocalVertexArray();
         Vector2f dest = new Vector2f();
-        pos.div(gameSize.y(), gameSize.y(), dest);
+        pos.div(gameSize.x(), gameSize.y(), dest);
         dest.mul((float) gameSize.x() / 1280, (float) gameSize.y() / 720);
         localTriangle.addOffset(dest);
         localTriangle.verticies().forEach(vector2f -> {
@@ -44,7 +46,7 @@ public abstract class WorldPositionedRenderable extends Renderable {
     }
 
     public void setPos(Vector2f pos) {
-        pos.set(pos);
+        this.pos.set(pos);
     }
 
     public abstract VertexArray getLocalVertexArray();

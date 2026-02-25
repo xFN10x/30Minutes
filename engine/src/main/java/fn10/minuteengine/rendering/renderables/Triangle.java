@@ -21,9 +21,9 @@ public class Triangle extends WorldPositionedRenderable {
                 Colour3.WHITE,
                 //pos
                 new Vector2f[]{
-                        new Vector2f(0.0f, 0.5f),
-                        new Vector2f(-0.5f, -0.5f),
-                        new Vector2f(0.5f, -0.5f)}
+                        new Vector2f(0.5f, 0.5f),
+                        new Vector2f(0, 0),
+                        new Vector2f(1, 0)}
         );
     }
 

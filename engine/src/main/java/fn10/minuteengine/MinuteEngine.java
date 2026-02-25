@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 
+import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.FatalException;
 import fn10.minuteengine.state.MinuteStateManager;
 import org.apache.logging.log4j.Level;
@@ -41,6 +42,7 @@ public final class MinuteEngine {
     private URLClassLoader loader;
     public volatile MinuteGameInfo info;
     public volatile MinuteStateManager stateManager = new MinuteStateManager(this);
+    public volatile MinuteAudioEngine audioEngine = new MinuteAudioEngine();
 
     public MinuteRenderer renderer;
 
