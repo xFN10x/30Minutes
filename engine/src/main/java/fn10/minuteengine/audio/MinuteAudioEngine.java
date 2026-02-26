@@ -22,11 +22,14 @@ public class MinuteAudioEngine {
     private final int id;
     private final int source;
 
+
+
     public MinuteAudioEngine() {
         long device = alcOpenDevice((CharSequence) null);
         alcMakeContextCurrent(alcCreateContext(device, (int[]) null));
         ALCCapabilities alccap = ALC.createCapabilities(device);
         ALCapabilities alcap = AL.createCapabilities(alccap);
+        logger.info(alcGetString(, ALC_DEVICE_SPECIFIER));
         id = alGenBuffers();
         source = alGenSources();
         AudioInputStream audioInputStream;

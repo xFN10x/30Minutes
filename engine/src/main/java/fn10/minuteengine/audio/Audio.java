@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
 
+import static fn10.minuteengine.MinuteEngine.logger;
+
 public class Audio {
     protected final ByteBuffer audioDataBuffer;
 
@@ -16,6 +18,7 @@ public class Audio {
     }
 
     public static Audio loadAsset(URL asset) throws IOException {
+        logger.info("Loading asset: {}", asset.getPath());
         return new Audio(asset.openStream());
     }
 }

@@ -14,7 +14,6 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.plugins.util.PluginUtil;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -23,7 +22,6 @@ import com.google.gson.JsonSyntaxException;
 import fn10.minuteengine.game.MinuteGameInfo;
 import fn10.minuteengine.logging.MinuteEngineLayout;
 import fn10.minuteengine.rendering.MinuteRenderer;
-import fn10.minuteengine.state.State;
 import fn10.minuteengine.state.TestState;
 import fn10.minuteengine.util.MinuteJarUtils;
 
