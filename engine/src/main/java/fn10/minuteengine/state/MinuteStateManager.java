@@ -4,6 +4,7 @@ import fn10.minuteengine.MinuteEngine;
 import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.state.StateLoadFailedException;
 import fn10.minuteengine.exception.state.StateNotRegisteredException;
+import fn10.minuteengine.util.MinuteRandomUtils;
 
 import java.time.Instant;
 import java.util.HashMap;
@@ -15,7 +16,7 @@ public final class MinuteStateManager {
     public State currentState = null;
 
     public Long registerState(Class<? extends State> stateClass) {
-        long id = Instant.now().toEpochMilli();
+        long id = MinuteRandomUtils.getUnqiueId(0);
         reg.put(id, stateClass);
         return id;
     }

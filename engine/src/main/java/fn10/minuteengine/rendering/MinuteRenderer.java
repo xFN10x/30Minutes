@@ -35,6 +35,7 @@ public final class MinuteRenderer {
     // public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
     public static Font defaultFont;
+    public Colour3 clearColour = Colour3.BLACK;
 
     static {
         Font defaultFont1;
@@ -165,7 +166,7 @@ public final class MinuteRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, GLBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLElementArray);
 
-        glClearColor(0.1f, 0.1f, 0.1f, 0);
+        glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), 0);
 
         // position
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);

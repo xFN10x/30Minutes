@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.lwjgl:lwjgl-par::$lwjglNatives")
 	implementation("org.lwjgl:lwjgl-stb::$lwjglNatives")
 	//implementation("com.code-disaster.steamworks4j:steamworks4j:${steamworks4jVersion}")
-	implementation("org.joml:joml:$jomlVersion")
+	api("org.joml:joml:$jomlVersion")
 	//implementation("com.code-disaster.steamworks4j:steamworks4j-server:${steamworks4jserverVersion}")
 
 	// Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
