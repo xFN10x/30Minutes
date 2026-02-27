@@ -1,6 +1,7 @@
 package fn10.minuteengine.state;
 
 import fn10.minuteengine.MinuteEngine;
+import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.state.StateLoadFailedException;
 import fn10.minuteengine.exception.state.StateNotRegisteredException;
 
@@ -39,6 +40,9 @@ public final class MinuteStateManager {
         Class<? extends State> stateClas = reg.get(id);
         try {
             State state = stateClas.getConstructor().newInstance();
+
+            state.audioEngine = engine.audioEngine;
+
             state.onLoad();
             loaded.put(id, state);
             return state;

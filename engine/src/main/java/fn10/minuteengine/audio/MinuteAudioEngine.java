@@ -1,36 +1,28 @@
 package fn10.minuteengine.audio;
 
-import fn10.minuteengine.util.MinuteAssetUtils;
-import org.lwjgl.BufferUtils;
+import fn10.minuteengine.state.State;
+import fn10.minuteengine.util.MinuteRandomUtils;
 import org.lwjgl.openal.AL;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
-import org.lwjgl.openal.ALCapabilities;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.HashMap;
 
-import static fn10.minuteengine.MinuteEngine.logger;
-import static org.lwjgl.openal.AL11.*;
 import static org.lwjgl.openal.ALC11.*;
 
 public class MinuteAudioEngine {
-    private final int id;
-    private final int source;
 
-
+    private final HashMap<State, Long> stateSourceIds = new HashMap<>();
+    private final HashMap<Long, Source> sourceIds = new HashMap<>();
 
     public MinuteAudioEngine() {
         long device = alcOpenDevice((CharSequence) null);
         alcMakeContextCurrent(alcCreateContext(device, (int[]) null));
-        ALCCapabilities alccap = ALC.createCapabilities(device);
-        ALCapabilities alcap = AL.createCapabilities(alccap);
-        logger.info(alcGetString(, ALC_DEVICE_SPECIFIER));
-        id = alGenBuffers();
+        ALCCapabilities alccap =
+                ALC.createCapabilities(device);
+        //ALCapabilities alcap =
+        AL.createCapabilities(alccap);
+        /*id = alGenBuffers();
         source = alGenSources();
         AudioInputStream audioInputStream;
         try {
@@ -44,6 +36,14 @@ public class MinuteAudioEngine {
             alSourcePlay(source);
         } catch (UnsupportedAudioFileException | IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
+    }
+
+    public Source getAudioSource(State state) {
+        Long id = MinuteRandomUtils.getUnqiueId(0);
+        Source source = new Source();
+        sourceIds.put(id, source);
+        stateSourceIds.put(state, id);
+        return source;
     }
 }

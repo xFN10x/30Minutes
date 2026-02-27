@@ -75,8 +75,8 @@ public abstract class Shader implements AutoCloseable {
 
         glLinkProgram(shaderID);
 
-        logger.info(glGetShaderInfoLog(vertShaderID));
-        logger.info(glGetShaderInfoLog(fragShaderID));
+        //logger.info(glGetShaderInfoLog(vertShaderID));
+        //logger.info(glGetShaderInfoLog(fragShaderID));
 
         glDeleteShader(vertShaderID);
         glDeleteShader(fragShaderID);

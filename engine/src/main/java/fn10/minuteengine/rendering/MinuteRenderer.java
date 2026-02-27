@@ -143,6 +143,7 @@ public final class MinuteRenderer {
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_SAMPLES, 16);
 
         return new MinuteRenderer(engine);
     }
@@ -178,6 +179,7 @@ public final class MinuteRenderer {
         glVertexAttribPointer(2, 2, GL_FLOAT, false, 32, 24);
         glEnableVertexAttribArray(2);
 
+        glEnable(GL_MULTISAMPLE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 

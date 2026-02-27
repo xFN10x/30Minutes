@@ -2,6 +2,7 @@ package fn10.minuteengine;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -9,7 +10,9 @@ import java.nio.file.Path;
 
 import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.FatalException;
+import fn10.minuteengine.game.MinuteGame;
 import fn10.minuteengine.state.MinuteStateManager;
+import fn10.minuteengine.state.State;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,6 +33,7 @@ public final class MinuteEngine {
     public static int ERR_GAME_FAIL_LOAD_GENERIC = 10;
     public static int ERR_GAME_FAIL_LOAD_URL_ERROR = 11;
     public static int ERR_GAME_FAIL_LOAD_FAIL_READ = 12;
+    public static int ERR_GAME_FAIL_LOAD_INIT_STATE = 13;
     public static int ERR_RENDER_GENERIC = 20;
     public static int ERR_RENDER_INIT_FAIL = 200;
     public static int ERR_GENERIC = 90;
@@ -60,7 +64,24 @@ public final class MinuteEngine {
     public void start() {
         renderer = MinuteRenderer.initRenderer(this);
         running = true;
-        stateManager.changeState(stateManager.registerState(TestState.class));
+
+        try {
+            Class<?> mainGameClass = loader.loadClass(info.mainClass());
+            MinuteGame mainGame = (MinuteGame) mainGameClass.getConstructor().newInstance();
+            Long stateId = mainGame.getInitalState(stateManager);
+            stateManager.changeState(stateId);
+        } catch (ClassNotFoundException e) {
+            throw new FatalException("Failed to load main game class: " + info.mainClass(), ERR_GAME_FAIL_LOAD_INIT_STATE, e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             logger.log(Level.FATAL, "Uncaught Exception in " + t.getName(), e);
             if (e instanceof FatalException) {
