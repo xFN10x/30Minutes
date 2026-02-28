@@ -3,13 +3,13 @@ package fn10.minuteengine.rendering.renderables;
 import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.rendering.shaders.SolidColourShader;
-import fn10.minuteengine.rendering.shaders.TestShader;
 import org.joml.Vector2f;
 
-import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.VertexArray;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
+
+import java.awt.*;
 
 public class Triangle extends WorldPositionedRenderable {
     public Triangle(Vector2f Position, Vector2f Scale) {
@@ -18,7 +18,7 @@ public class Triangle extends WorldPositionedRenderable {
 
     public VertexArray getLocalVertexArray() {
         return new VertexArray(
-                Colour3.WHITE,
+                Color.white,
                 //pos
                 new Vector2f[]{
                         new Vector2f(0.5f, 0.5f),

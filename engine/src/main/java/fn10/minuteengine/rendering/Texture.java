@@ -6,6 +6,7 @@ import fn10.minuteengine.util.MinuteVectorIntUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
+import org.lwjgl.opengl.GL;
 
 import javax.imageio.ImageIO;
 
@@ -81,10 +82,6 @@ public class Texture {
     }
 
     private static Texture test = null;
-
-    static {
-
-    }
 
     public static Texture ofTest() {
         if (test == null) {

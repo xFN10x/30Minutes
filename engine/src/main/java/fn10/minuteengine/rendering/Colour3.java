@@ -1,5 +1,6 @@
 package fn10.minuteengine.rendering;
 
+@Deprecated
 public final class Colour3 {
     private final float r;
     private final float g;
@@ -7,6 +8,7 @@ public final class Colour3 {
 
     public static final Colour3 BLACK = new Colour3(0, 0, 0);
     public static final Colour3 WHITE = new Colour3(1f, 1f, 1f);
+    public static final Colour3 ERROR_PINK = new Colour3(1f, 0.6f, 0.6f);
 
     /**
      * Creates a new colour with the float params

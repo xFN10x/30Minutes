@@ -32,11 +32,11 @@ dependencies {
 	//implementation("com.code-disaster.steamworks4j:steamworks4j-server:${steamworks4jserverVersion}")
 
 	// Source: https://mvnrepository.com/artifact/com.google.code.gson/gson
-	implementation("com.google.code.gson:gson:2.13.2")
+	api("com.google.code.gson:gson:2.13.2")
 	// Source: https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core
-	implementation("org.apache.logging.log4j:log4j-core:2.25.3")
+	api("org.apache.logging.log4j:log4j-core:2.25.3")
 	annotationProcessor("org.apache.logging.log4j:log4j-core:2.25.3")
 	// Source: https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-	implementation("org.apache.commons:commons-lang3:3.20.0")
+	api("org.apache.commons:commons-lang3:3.20.0")
 }
 

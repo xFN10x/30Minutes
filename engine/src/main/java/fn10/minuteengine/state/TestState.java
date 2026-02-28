@@ -5,17 +5,21 @@ import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.audio.Source;
 import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
+import fn10.minuteengine.rendering.Texture;
 import fn10.minuteengine.rendering.renderables.Square;
 import fn10.minuteengine.rendering.renderables.Text;
+import fn10.minuteengine.rendering.renderables.TexturedSquare;
 import fn10.minuteengine.rendering.renderables.Triangle;
 import fn10.minuteengine.util.MinuteAssetUtils;
 import org.joml.Vector2f;
+
+import java.awt.*;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 
 public class TestState extends State {
     private final Triangle testTri = new Triangle(new Vector2f(0.5f, 0), new Vector2f(100f, 100f));
-    private final Square testSquare = new Square(new Vector2f(-8200, 0), new Vector2f(100f, 100f));
+    private final TexturedSquare testSquare = new TexturedSquare(new Vector2f(-8200, 0), new Vector2f(100f, 100f), Texture.ofTest());
     private final Text testText = new Text("", new Vector2f(-8200, 2360), new Vector2f(100f, 100f), 32);
     private Source source;
 
@@ -42,8 +46,8 @@ public class TestState extends State {
 
     @Override
     public void onLoad() {
-        testTri.setColour(new Colour3(0.99f, 0.99f, 0.99f));
-        testSquare.setColour(new Colour3(0.49f, 0.49f, 0.99f));
+        testTri.setColour(new Color(0.99f, 0.99f, 0.99f));
+        testSquare.setColour(new Color(0.49f, 0.49f, 0.99f));
         source = audioEngine.getAudioSource(this);
         try {
             Audio audio = Audio.loadAsset(MinuteAssetUtils.getAsset("/test/test.wav", null));

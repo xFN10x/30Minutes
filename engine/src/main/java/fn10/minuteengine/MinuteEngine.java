@@ -27,6 +27,10 @@ import fn10.minuteengine.logging.MinuteEngineLayout;
 import fn10.minuteengine.rendering.MinuteRenderer;
 import fn10.minuteengine.state.TestState;
 import fn10.minuteengine.util.MinuteJarUtils;
+import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL;
+
+import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public final class MinuteEngine {
 
@@ -65,23 +69,6 @@ public final class MinuteEngine {
         renderer = MinuteRenderer.initRenderer(this);
         running = true;
 
-        try {
-            Class<?> mainGameClass = loader.loadClass(info.mainClass());
-            MinuteGame mainGame = (MinuteGame) mainGameClass.getConstructor().newInstance();
-            Long stateId = mainGame.getInitalState(stateManager);
-            stateManager.changeState(stateId);
-        } catch (ClassNotFoundException e) {
-            throw new FatalException("Failed to load main game class: " + info.mainClass(), ERR_GAME_FAIL_LOAD_INIT_STATE, e);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (InstantiationException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             logger.log(Level.FATAL, "Uncaught Exception in " + t.getName(), e);
             if (e instanceof FatalException) {
@@ -90,6 +77,16 @@ public final class MinuteEngine {
             else exitWithCode(ERR_GENERIC);
         });
         mainLoop();
+        try {
+            Class<?> mainGameClass = loader.loadClass(info.mainClass());
+            MinuteGame mainGame = (MinuteGame) mainGameClass.getConstructor().newInstance();
+            Long stateId = mainGame.getInitalState(stateManager);
+            stateManager.changeState(stateId);
+        } catch (ClassNotFoundException e) {
+            throw new FatalException("Failed to load main game class: " + info.mainClass(), ERR_GAME_FAIL_LOAD_INIT_STATE, e);
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
+            throw new FatalException("Failed to load init state.", ERR_GAME_FAIL_LOAD_INIT_STATE,e);
+        }
     }
 
     public void stop() {
@@ -141,7 +138,9 @@ public final class MinuteEngine {
      * Starts all the loops in the engine, like rendering.
      */
     private void mainLoop() {
+        logger.info("Starting render loop...");
         renderThread.start();
+        logger.info("Starting main loop...");
     }
 
     public static void exitWithCode(int code) {

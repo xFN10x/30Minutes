@@ -5,15 +5,21 @@ import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.state.StateLoadFailedException;
 import fn10.minuteengine.exception.state.StateNotRegisteredException;
 import fn10.minuteengine.util.MinuteRandomUtils;
+import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
 import java.time.Instant;
 import java.util.HashMap;
+
+import static fn10.minuteengine.MinuteEngine.logger;
 
 public final class MinuteStateManager {
     private final HashMap<Long, Class<? extends State>> reg = new HashMap<>();
     private final HashMap<Long, State> loaded = new HashMap<>();
     private final MinuteEngine engine;
-    public State currentState = null;
+    @NotNull
+    public State currentState = new BlankState();
+    public HashMap<State, Thread> stateThreads = new HashMap<>();
 
     public Long registerState(Class<? extends State> stateClass) {
         long id = MinuteRandomUtils.getUnqiueId(0);
@@ -43,6 +49,7 @@ public final class MinuteStateManager {
             State state = stateClas.getConstructor().newInstance();
 
             state.audioEngine = engine.audioEngine;
+            state.engine = engine;
 
             state.onLoad();
             loaded.put(id, state);
@@ -62,9 +69,10 @@ public final class MinuteStateManager {
      * @return The state that got started.
      */
     public State changeState(Long id) {
+        logger.info(Thread.currentThread().getName());
         State state = getState(id);
         currentState = state;
-        state.onStart();
+        currentState.onStart();
         return state;
     }
 }

@@ -1,5 +1,6 @@
 package fn10.minuteengine.rendering;
 
+import java.awt.*;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +10,12 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 
-public record VertexArray(Colour3 colour, ArrayList<Vector2f> verticies, ArrayList<Vector2f> UV) {
-    public VertexArray(@NotNull Colour3 colour, @NotNull Vector2f[] verticies, @NotNull Vector2f[] UV) {
+public record VertexArray(Color colour, ArrayList<Vector2f> verticies, ArrayList<Vector2f> UV) {
+    public VertexArray(@NotNull Color colour, @NotNull Vector2f[] verticies, @NotNull Vector2f[] UV) {
         this(colour, new ArrayList<>(List.of(verticies)), new ArrayList<>(List.of(UV)));
     }
 
-    public VertexArray(@NotNull Colour3 colour, @NotNull Vector2f[] verticies) {
+    public VertexArray(@NotNull Color colour, @NotNull Vector2f[] verticies) {
         this(colour, new ArrayList<>(List.of(verticies)), new ArrayList<Vector2f>());
         for (int i = 0; i < verticies().size(); i++) {
             UV().add(new Vector2f(0,0));

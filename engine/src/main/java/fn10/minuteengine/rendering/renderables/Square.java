@@ -12,6 +12,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3i;
 import org.joml.Vector3ic;
 
+import java.awt.*;
+
 public class Square extends WorldPositionedRenderable {
     public Square(Vector2f Position, Vector2f Scale) {
         super(Position, Scale);
@@ -19,7 +21,7 @@ public class Square extends WorldPositionedRenderable {
 
     public VertexArray getLocalVertexArray() {
         return new VertexArray(
-                Colour3.WHITE,
+                Color.white,
                 //pos
                 new Vector2f[]{
                         new Vector2f(1, 1), //top-right

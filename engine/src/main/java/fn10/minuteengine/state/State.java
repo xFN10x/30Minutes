@@ -1,12 +1,13 @@
 package fn10.minuteengine.state;
 
+import fn10.minuteengine.MinuteEngine;
 import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
 
 public abstract class State {
-
     protected boolean loadOnGameLoad = false;
     protected MinuteAudioEngine audioEngine;
+    protected MinuteEngine engine;
 
     /**
      * Load this state

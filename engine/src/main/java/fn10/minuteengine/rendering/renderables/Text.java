@@ -15,9 +15,12 @@ import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.joml.Vector4d;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * https://stackoverflow.com/questions/19182843/write-text-on-the-screen-with-lwjgl
@@ -39,7 +42,7 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
         super(pos, scale);
         this.text = text;
         this.fontSize = FontSize;
-        this.colour = Colour3.BLACK;
+        this.colour = Color.white;
 
         bi = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         graphics = bi.createGraphics();
@@ -56,9 +59,10 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
 
         bi = new BufferedImage(Math.max((int) textSize.z, 1), Math.max((int) textSize.w, 1), BufferedImage.TYPE_INT_ARGB);
         graphics = bi.createGraphics();
+        graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         graphics.setFont(MinuteRenderer.defaultFont.deriveFont(fontSize));
-        graphics.setBackground(new Color(50, 0, 0, 0));
-        graphics.setColor(Color.WHITE);
+        graphics.setBackground(new Color(0, 0, 0, 0));
+        graphics.setColor(colour);
         graphics.drawString(this.text, (int) textSize.x, Math.abs((int) textSize.y));
     }
 
@@ -88,7 +92,7 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
         float height = (float) textSize.w();
         float width = (float) textSize.z();
         return new VertexArray(
-                Colour3.BLACK,
+                ERROR_PINK,
                 new Vector2f[]{
                         new Vector2f(width/100, height/100), //top-right
                         new Vector2f(0, height/100), //top-left

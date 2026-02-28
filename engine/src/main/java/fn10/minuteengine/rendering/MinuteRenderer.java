@@ -34,30 +34,8 @@ public final class MinuteRenderer {
 
     // public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
-    public static Font defaultFont;
-    public Colour3 clearColour = Colour3.BLACK;
-
-    static {
-        Font defaultFont1;
-        GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        try {
-            InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
-            if (streamAsset == null)
-                throw new NullPointerException("Font Asset Not Found");
-            defaultFont1 = Font.createFont(Font.TRUETYPE_FONT, streamAsset).deriveFont(Font.PLAIN, 64);
-        } catch (Exception e) {
-            logger.log(Level.ERROR, "Failed to load font; using fallback.");
-            defaultFont1 = localGraphicsEnvironment.getAllFonts()[0];
-        }
-        defaultFont = defaultFont1;
-        if (!localGraphicsEnvironment.registerFont(defaultFont)) {
-            logger.log(Level.ERROR, "Failed to load font; using fallback.");
-            defaultFont = localGraphicsEnvironment.getAllFonts()[0];
-        } else {
-            logger.info("Font loaded.");
-
-        }
-    }
+    public static Font defaultFont = null;
+    public Color clearColour = Color.black;
 
     private final FrameRateCounter frc = new FrameRateCounter();
     public static MinuteRenderer current;
@@ -95,8 +73,9 @@ public final class MinuteRenderer {
         }
 
         GLFW.glfwDefaultWindowHints();
-        GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW_TRUE);
-        GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_SAMPLES, 16);
 
         currentWindow = GLFW.glfwCreateWindow(gameSize.x(), gameSize.y(), "MinuteEngine", NULL, NULL);
         if (currentWindow == NULL) {
@@ -140,11 +119,20 @@ public final class MinuteRenderer {
     public static MinuteRenderer initRenderer(MinuteEngine engine) {
         glfwInit();
 
-        // Configure GLFW
-        glfwDefaultWindowHints();
-        glfwWindowHint(GLFW_VISIBLE, GLFW_TRUE);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-        glfwWindowHint(GLFW_SAMPLES, 16);
+        if (defaultFont == null) {
+            Font defaultFont1;
+            GraphicsEnvironment localGraphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            try {
+                InputStream streamAsset = MinuteAssetUtils.getStreamAsset("/font/opensans.ttf", null);
+                if (streamAsset == null)
+                    throw new NullPointerException("Font Asset Not Found");
+                defaultFont1 = Font.createFont(Font.TRUETYPE_FONT, streamAsset).deriveFont(Font.PLAIN, 48);
+            } catch (Exception e) {
+                logger.log(Level.ERROR, "Failed to load font; using fallback.", e);
+                defaultFont1 = localGraphicsEnvironment.getAllFonts()[0];
+            }
+            defaultFont = defaultFont1;
+        }
 
         return new MinuteRenderer(engine);
     }
