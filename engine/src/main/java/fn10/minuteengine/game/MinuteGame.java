@@ -37,10 +37,5 @@ public abstract class MinuteGame {
      * Gets the state that this game starts with.
      * @return The state id.
      */
-    public abstract Long getInitalState(MinuteStateManager stateManager);
-
-    /**
-     * This function is called when the first state starts.
-     */
-    public abstract void onStart();
+    public abstract Long getInitialState(MinuteStateManager stateManager);
 }

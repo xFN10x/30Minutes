@@ -4,23 +4,18 @@ import fn10.minuteengine.MinuteEngine;
 import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
 
+import java.awt.*;
+
 public abstract class State {
-    protected boolean loadOnGameLoad = false;
     protected MinuteAudioEngine audioEngine;
     protected MinuteEngine engine;
-
-    /**
-     * Load this state
-     */
-    protected final void loadOnGameLoad() {
-        loadOnGameLoad = true;
-    }
-
+    public Color clearColour = Color.BLACK;
     /**
      * This function runs on the render thread, every frame. This is where rendering happens.
      * @param queue the MinuteRenderQueue used to queue rendering renderables.
+     * @param dt The delta time / frametime of the previous frame.
      */
-    public abstract void onRenderThread(MinuteRenderQueue queue);
+    public abstract void onRenderThread(MinuteRenderQueue queue, float dt);
 
     /**
      * Executes every game update.

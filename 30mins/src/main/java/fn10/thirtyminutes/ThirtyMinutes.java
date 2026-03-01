@@ -5,21 +5,21 @@ import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.state.State;
 import fn10.minuteengine.state.TestState;
 import fn10.thirtyminutes.state.GameLoadState;
+import fn10.thirtyminutes.state.TitleState;
 
 public class ThirtyMinutes extends MinuteGame {
 
+    public static Long GAME_LOAD_STATE;
+    public static Long TITLE_STATE;
+
     @Override
-    public Long getInitalState(MinuteStateManager stateManager) {
-        return stateManager.registerState(GameLoadState.class);
+    public Long getInitialState(MinuteStateManager stateManager) {
+        return GAME_LOAD_STATE;
     }
 
     @Override
     public void onLoad(MinuteStateManager stateManager) {
-
-    }
-
-    @Override
-    public void onStart() {
-
+        GAME_LOAD_STATE = stateManager.registerState(GameLoadState.class);
+        TITLE_STATE = stateManager.registerState(TitleState.class);
     }
 }

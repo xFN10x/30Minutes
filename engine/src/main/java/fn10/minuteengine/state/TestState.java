@@ -1,12 +1,9 @@
 package fn10.minuteengine.state;
 
 import fn10.minuteengine.audio.Audio;
-import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.audio.Source;
-import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
 import fn10.minuteengine.rendering.Texture;
-import fn10.minuteengine.rendering.renderables.Square;
 import fn10.minuteengine.rendering.renderables.Text;
 import fn10.minuteengine.rendering.renderables.TexturedSquare;
 import fn10.minuteengine.rendering.renderables.Triangle;
@@ -24,7 +21,7 @@ public class TestState extends State {
     private Source source;
 
     @Override
-    public void onRenderThread(MinuteRenderQueue queue) {
+    public void onRenderThread(MinuteRenderQueue queue, float dt) {
         queue.render(testTri);
         queue.render(testSquare);
         queue.render(testText);
@@ -48,7 +45,7 @@ public class TestState extends State {
     public void onLoad() {
         testTri.setColour(new Color(0.99f, 0.99f, 0.99f));
         testSquare.setColour(new Color(0.49f, 0.49f, 0.99f));
-        source = audioEngine.getAudioSource(this);
+        source = audioEngine.newAudioSource(this);
         try {
             Audio audio = Audio.loadAsset(MinuteAssetUtils.getAsset("/test/test.wav", null));
             source.setAudio(audio);

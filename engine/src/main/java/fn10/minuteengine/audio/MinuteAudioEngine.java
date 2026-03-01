@@ -39,7 +39,7 @@ public class MinuteAudioEngine {
         }*/
     }
 
-    public Source getAudioSource(State state) {
+    public Source newAudioSource(State state) {
         Long id = MinuteRandomUtils.getUnqiueId(0);
         Source source = new Source();
         sourceIds.put(id, source);

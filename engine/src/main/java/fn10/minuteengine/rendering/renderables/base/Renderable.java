@@ -1,6 +1,5 @@
 package fn10.minuteengine.rendering.renderables.base;
 
-import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.shaders.Shader;
 import fn10.minuteengine.util.MinuteVectorFloatUtils;
 import org.joml.Vector2fc;

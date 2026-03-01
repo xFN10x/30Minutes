@@ -4,7 +4,7 @@ import fn10.minuteengine.rendering.MinuteRenderQueue;
 
 public class BlankState extends State {
     @Override
-    public void onRenderThread(MinuteRenderQueue queue) {
+    public void onRenderThread(MinuteRenderQueue queue, float dt) {
     }
 
     @Override

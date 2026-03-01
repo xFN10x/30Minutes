@@ -12,7 +12,6 @@ import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.exception.FatalException;
 import fn10.minuteengine.game.MinuteGame;
 import fn10.minuteengine.state.MinuteStateManager;
-import fn10.minuteengine.state.State;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -25,12 +24,7 @@ import com.google.gson.JsonSyntaxException;
 import fn10.minuteengine.game.MinuteGameInfo;
 import fn10.minuteengine.logging.MinuteEngineLayout;
 import fn10.minuteengine.rendering.MinuteRenderer;
-import fn10.minuteengine.state.TestState;
 import fn10.minuteengine.util.MinuteJarUtils;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.opengl.GL;
-
-import static org.lwjgl.glfw.GLFW.glfwInit;
 
 public final class MinuteEngine {
 
@@ -40,9 +34,10 @@ public final class MinuteEngine {
     public static int ERR_GAME_FAIL_LOAD_INIT_STATE = 13;
     public static int ERR_RENDER_GENERIC = 20;
     public static int ERR_RENDER_INIT_FAIL = 200;
-    public static int ERR_GENERIC = 90;
     public static int ERR_NO_GAME_TO_LAUNCH = 91;
+    public static int ERR_MALFORMED_LAUNCH_ARG = 92;
     public static int NO_ERR = 0;
+    public static int ERR_GENERIC = 1;
     public static Gson gson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
 
     private URLClassLoader loader;
@@ -80,7 +75,8 @@ public final class MinuteEngine {
         try {
             Class<?> mainGameClass = loader.loadClass(info.mainClass());
             MinuteGame mainGame = (MinuteGame) mainGameClass.getConstructor().newInstance();
-            Long stateId = mainGame.getInitalState(stateManager);
+            mainGame.onLoad(stateManager);
+            Long stateId = mainGame.getInitialState(stateManager);
             stateManager.changeState(stateId);
         } catch (ClassNotFoundException e) {
             throw new FatalException("Failed to load main game class: " + info.mainClass(), ERR_GAME_FAIL_LOAD_INIT_STATE, e);
@@ -96,20 +92,31 @@ public final class MinuteEngine {
         exitWithCode(NO_ERR);
     }
 
-    public int loadGameJar(Path jarPath, String op) {
+    public int loadGameJar(Path jarPath) {
         URL gameInfoJsonUrl;
         try {
-            if (op.equals("jar"))
-                gameInfoJsonUrl = MinuteJarUtils.getFileFromJar(jarPath, "me.game.json");
-            else if (op.equals("binFolder"))
-                gameInfoJsonUrl = jarPath.resolve("me.game.json").toUri().toURL();
-            else
-                return ERR_GAME_FAIL_LOAD_URL_ERROR;
+            gameInfoJsonUrl = MinuteJarUtils.getFileFromJar(jarPath, "me.game.json");
         } catch (MalformedURLException e) {
-            logger.log(Level.ERROR, "Failed to get jar URL with op: " + op + ", and path " + jarPath + ".", e);
+            logger.log(Level.ERROR, "Failed to get jar URL with op: " + ", and path " + jarPath + ".", e);
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
         }
 
+        return loadGame(jarPath, gameInfoJsonUrl);
+    }
+
+    public int loadGameFromFolders(Path classPath, Path resourcePath) {
+        URL gameInfoJsonUrl;
+        try {
+            gameInfoJsonUrl = resourcePath.resolve("me.game.json").toUri().toURL();
+        } catch (MalformedURLException e) {
+            logger.log(Level.ERROR, "Fail", e);
+            return ERR_GAME_FAIL_LOAD_URL_ERROR;
+        }
+
+        return loadGame(classPath, gameInfoJsonUrl);
+    }
+
+    private int loadGame(Path classPath, URL gameInfoJsonUrl) {
         logger.info("Loading game from: {}", gameInfoJsonUrl.toString());
 
         MinuteGameInfo gameInfo;
@@ -124,7 +131,7 @@ public final class MinuteEngine {
         info = gameInfo;
 
         try {
-            loader = new URLClassLoader(new URL[]{jarPath.toUri().toURL()});
+            loader = new URLClassLoader(new URL[]{classPath.toUri().toURL()});
         } catch (MalformedURLException e) {
             e.printStackTrace();
             return ERR_GAME_FAIL_LOAD_URL_ERROR;
@@ -150,17 +157,21 @@ public final class MinuteEngine {
 
     static void main(String[] args) {
         logger.info("Starting Java VM with args: {}", String.join(", ", args));
-        if (args.length <= 0)
-            exitWithCode(ERR_NO_GAME_TO_LAUNCH);
-        String jarOp = "jar";
-        if (args.length >= 2) {
-            jarOp = args[1];
-        }
-        Path jarPath = Path.of(args[0]);
         MinuteEngine minuteEngine = new MinuteEngine();
-        int errCode;
-        if ((errCode = minuteEngine.loadGameJar(jarPath, jarOp)) != NO_ERR)
-            exitWithCode(errCode);
+        if (args.length <= 0)
+            exitWithCode(ERR_MALFORMED_LAUNCH_ARG);
+        else if (args[0].equals("binFolder") && args.length >= 3)  {
+            int errCode;
+            if ((errCode = minuteEngine.loadGameFromFolders(Path.of(args[1]), Path.of(args[2]))) != NO_ERR)
+                exitWithCode(errCode);
+        } else if (args[0].equals("jar") && args.length >= 2) {
+            int errCode;
+            if ((errCode = minuteEngine.loadGameJar(Path.of(args[1]))) != NO_ERR)
+                exitWithCode(errCode);
+        } else {
+            exitWithCode(ERR_MALFORMED_LAUNCH_ARG);
+        }
+
 
         minuteEngine.start();
     }

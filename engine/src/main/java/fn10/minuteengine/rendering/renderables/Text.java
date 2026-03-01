@@ -1,13 +1,11 @@
 package fn10.minuteengine.rendering.renderables;
 
-import fn10.minuteengine.rendering.Colour3;
 import fn10.minuteengine.rendering.MinuteRenderer;
 import fn10.minuteengine.rendering.Texture;
 import fn10.minuteengine.rendering.VertexArray;
 import fn10.minuteengine.rendering.renderables.base.TexturedRenderable;
 import fn10.minuteengine.rendering.renderables.base.WorldPositionedRenderable;
 import fn10.minuteengine.rendering.shaders.Shader;
-import fn10.minuteengine.rendering.shaders.SolidColourShader;
 import fn10.minuteengine.rendering.shaders.TextureShader;
 import fn10.minuteengine.util.MinuteRandomUtils;
 import org.joml.Vector2f;
@@ -15,22 +13,19 @@ import org.joml.Vector3i;
 import org.joml.Vector3ic;
 import org.joml.Vector4d;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
 /**
- * https://stackoverflow.com/questions/19182843/write-text-on-the-screen-with-lwjgl
+ * <a href="https://stackoverflow.com/questions/19182843/write-text-on-the-screen-with-lwjgl">Help</a>
  */
 public class Text extends WorldPositionedRenderable implements TexturedRenderable {
 
     private String text;
     private BufferedImage bi;
     private Graphics2D graphics;
-    private Vector4d textSize;
+    protected Vector4d textSize;
     private final Long id = MinuteRandomUtils.getUnqiueId(1);
     private final float fontSize;
 
@@ -50,9 +45,8 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
         setText(text);
     }
 
-    public void setText(String text) {
+    public void clearCached() {
         Texture.clearCache(id);
-        this.text = text;
         FontMetrics metrics = graphics.getFontMetrics();
         Rectangle2D textSizeRect = metrics.getStringBounds(this.text, bi.getGraphics());
         this.textSize = new Vector4d(textSizeRect.getX(), textSizeRect.getY(), textSizeRect.getWidth(), textSizeRect.getHeight());
@@ -64,6 +58,11 @@ public class Text extends WorldPositionedRenderable implements TexturedRenderabl
         graphics.setBackground(new Color(0, 0, 0, 0));
         graphics.setColor(colour);
         graphics.drawString(this.text, (int) textSize.x, Math.abs((int) textSize.y));
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        clearCached();
     }
 
     public String getText() {

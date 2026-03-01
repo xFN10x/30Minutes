@@ -37,7 +37,6 @@ public final class MinuteRenderer {
     // public ArrayList<Runnable> runPerLoop = new ArrayList<>(0);
     public Vector2i gameSize = new Vector2i(1280, 720);
     public static Font defaultFont = null;
-    public Color clearColour = Color.black;
 
     private final FrameRateCounter frc = new FrameRateCounter();
     public static MinuteRenderer current;
@@ -158,13 +157,11 @@ public final class MinuteRenderer {
         glBindBuffer(GL_ARRAY_BUFFER, GLBuffer);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, GLElementArray);
 
-        glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), 0);
-
         // position
         glVertexAttribPointer(0, 3, GL_FLOAT, false, 32, 0);
         glEnableVertexAttribArray(0);
 
-        // colour
+        // colourL
         glVertexAttribPointer(1, 3, GL_FLOAT, false, 32, 12);
         glEnableVertexAttribArray(1);
 
@@ -176,8 +173,17 @@ public final class MinuteRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+        Color setClearColour = state.currentState.clearColour;
+
         while (!glfwWindowShouldClose(currentWindow)) {
             Instant begin = Instant.now();
+
+            Color clearColour = state.currentState.clearColour;
+            if (setClearColour != clearColour) {
+                setClearColour = clearColour;
+                glClearColor(clearColour.getRed(), clearColour.getGreen(), clearColour.getBlue(), 0);
+            }
+
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             // glEnableClientState(GL_VERTEX_ARRAY);
 
@@ -220,10 +226,10 @@ public final class MinuteRenderer {
 
             renderQueue.shaderVertQueue.clear();
             glfwPollEvents();
-            state.currentState.onRenderThread(renderQueue);
             frc.frame();
             Instant end = Instant.now();
             Instant frameTime = end.minusNanos(begin.getNano());
+            state.currentState.onRenderThread(renderQueue, frameTime.getNano()/1000000000f);
             // logger.log(Level.INFO, "Frametime: {}", frameTime.getNano()/1000000000f);
             // logger.log(Level.INFO, "Framerate: {}", frc.getFrameRate());
         }
