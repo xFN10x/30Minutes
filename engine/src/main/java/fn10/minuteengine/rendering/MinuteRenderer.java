@@ -7,6 +7,7 @@ import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.util.MinuteAssetUtils;
 import org.apache.logging.log4j.Level;
 import org.joml.Vector2i;
+import org.joml.Vector2ic;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWVidMode;
@@ -17,6 +18,7 @@ import java.awt.*;
 import java.io.InputStream;
 import java.nio.IntBuffer;
 import java.time.Instant;
+import java.util.HashMap;
 
 import static fn10.minuteengine.MinuteEngine.logger;
 import static org.lwjgl.glfw.GLFW.*;
@@ -39,6 +41,8 @@ public final class MinuteRenderer {
 
     private final FrameRateCounter frc = new FrameRateCounter();
     public static MinuteRenderer current;
+
+    public HashMap<Long, Integer> textureCache = new HashMap<>();
 
     /**
      * A bool specifing if it's time to render things to screen currently.
@@ -188,7 +192,23 @@ public final class MinuteRenderer {
                 if (renderQueue.textures.containsKey(id)) {
                     // this has texture
                     Texture texture = renderQueue.textures.get(id);
-                    texture.bind();
+                    if (textureCache.containsKey(texture.getId())) {
+                        glBindTexture(GL_TEXTURE_2D, textureCache.get(texture.getId()));
+                    } else {
+                        int texId = glGenTextures();
+                        Vector2ic size = texture.getSize();
+                        textureCache.put(texture.getId(), texId);
+                        glBindTexture(GL_TEXTURE_2D, texId);
+
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+                        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, texture.getData());
+                    }
+
+
                     glUniform1i(glGetUniformLocation(shader.getProgramID(), "tex"), 0);
                 }
                 glBindVertexArray(GLArray);

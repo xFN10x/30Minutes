@@ -1,12 +1,11 @@
 package fn10.minuteengine.rendering;
 
-import fn10.minuteengine.rendering.renderables.Text;
 import fn10.minuteengine.util.MinuteAssetUtils;
+import fn10.minuteengine.util.MinuteRandomUtils;
 import fn10.minuteengine.util.MinuteVectorIntUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector2i;
 import org.joml.Vector2ic;
-import org.lwjgl.opengl.GL;
 
 import javax.imageio.ImageIO;
 
@@ -18,30 +17,17 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_REPEAT;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_S;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_WRAP_T;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL33.*;
 import static org.lwjgl.system.MemoryUtil.memAlloc;
 
 public class Texture {
     private Vector2ic size;
     private final ByteBuffer data;
-    private final int GLTexture;
+    private final Long id;
     private static final HashMap<Long, Texture> cached = new HashMap<>();
 
     private Texture(Vector2ic size, BufferedImage bi) {
         this.size = size;
+        id = MinuteRandomUtils.getUnqiueId(0);
 
         //JOptionPane.showMessageDialog(null, bi.getType());
 
@@ -54,7 +40,7 @@ public class Texture {
         data = memAlloc(4 * size.x() * size.y());
         data.put(ArrayUtils.toPrimitive(bytes.toArray(new Byte[0])));
         data.flip();
-        GLTexture = glGenTextures();
+        /*GLTexture = glGenTextures();
         bind();
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -62,15 +48,20 @@ public class Texture {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x(), size.y(), 0, GL_RGBA, GL_UNSIGNED_BYTE, data);*/
     }
 
-    public void bind() {
-        glBindTexture(GL_TEXTURE_2D, GLTexture);
-    }
+    //public void bind() {
+    //    glBindTexture(GL_TEXTURE_2D, GLTexture);
+    //}
+
 
     public Vector2ic getSize() {
         return size;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public ByteBuffer getData() {
