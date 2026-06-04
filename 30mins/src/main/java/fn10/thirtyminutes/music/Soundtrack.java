@@ -14,6 +14,7 @@ public record Soundtrack(String name, URL TitleSong, URL... RandomSongs) {
     );
 
     private static URL asset(String name) {
-        return MinuteAssetUtils.getAsset("/music/" + name, ThirtyMinutes.class);
+        URL asset = MinuteAssetUtils.getAsset("/music/" + name, ThirtyMinutes.class);
+        return asset;
     }
 }

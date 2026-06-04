@@ -33,8 +33,8 @@ public final class SoundtrackHandler {
             RANDOM_SONGS.forEach(song -> {
                 try {
                     song.load();
-                } catch (UnsupportedAudioFileException | IOException e) {
-                    logger.error("Failed to load song: " + song.getUrl(), e);
+                } catch (Exception e) {
+                    logger.error("Failed to load song: " + song, e);
                 }
             });
             logger.info("Loaded Soundtrack: {}", CURRENT_SOUNDTRACK.name());

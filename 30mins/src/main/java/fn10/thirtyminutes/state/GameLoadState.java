@@ -2,9 +2,7 @@ package fn10.thirtyminutes.state;
 
 import fn10.minuteengine.rendering.MinuteRenderQueue;
 import fn10.minuteengine.rendering.renderables.Text;
-import fn10.minuteengine.state.MinuteStateManager;
 import fn10.minuteengine.state.State;
-import fn10.minuteengine.state.TestState;
 import fn10.thirtyminutes.ThirtyMinutes;
 import fn10.thirtyminutes.music.SoundtrackHandler;
 import org.joml.Vector2f;

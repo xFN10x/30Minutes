@@ -5,3 +5,4 @@ plugins {
 rootProject.name = "30Minutes"
 
 include("engine", "30mins")
+include("20MinsR")
