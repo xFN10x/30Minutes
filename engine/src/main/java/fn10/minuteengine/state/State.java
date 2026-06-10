@@ -3,13 +3,23 @@ package fn10.minuteengine.state;
 import fn10.minuteengine.MinuteEngine;
 import fn10.minuteengine.audio.MinuteAudioEngine;
 import fn10.minuteengine.rendering.MinuteRenderQueue;
+import org.jspecify.annotations.Nullable;
 
 import java.awt.*;
 
 public abstract class State {
-    protected MinuteAudioEngine audioEngine;
+    private MinuteAudioEngine audioEngine;
     protected MinuteEngine engine;
     public Color clearColour = Color.BLACK;
+
+    @Nullable
+    public MinuteAudioEngine getAudioEngine() {
+        return audioEngine;
+    }
+
+    public void setAudioEngine(MinuteAudioEngine val) {
+        this.audioEngine = val;
+    }
     /**
      * This function runs on the render thread, every frame. This is where rendering happens.
      * @param queue the MinuteRenderQueue used to queue rendering renderables.

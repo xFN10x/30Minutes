@@ -45,7 +45,7 @@ public class TestState extends State {
     public void onLoad() {
         testTri.setColour(new Color(0.99f, 0.99f, 0.99f));
         testSquare.setColour(new Color(0.49f, 0.49f, 0.99f));
-        source = audioEngine.newAudioSource(this);
+        source = getAudioEngine().newAudioSource(this);
         try {
             Audio audio = Audio.loadAsset(MinuteAssetUtils.getAsset("/test/test.wav", null));
             source.setAudio(audio);

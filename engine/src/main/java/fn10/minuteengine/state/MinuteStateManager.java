@@ -48,7 +48,7 @@ public final class MinuteStateManager {
         try {
             State state = stateClas.getConstructor().newInstance();
 
-            state.audioEngine = engine.audioEngine;
+            state.setAudioEngine(engine.audioEngine);
             state.engine = engine;
 
             state.onLoad();

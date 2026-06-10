@@ -81,7 +81,7 @@ public class TitleState extends State {
     public void onLoad() {
         text.setText("Loaded.");
 
-        musicSource = audioEngine.newAudioSource(this);
+        musicSource = getAudioEngine().newAudioSource(this);
         musicSource.setAudio(SoundtrackHandler.TITLE_SONG.getAudio());
     }
 }
